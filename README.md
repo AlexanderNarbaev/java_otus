@@ -1,2 +1,14 @@
-# java_otus
-Repository for Home Work at Java course in Otus
+#Группа 2019-09
+
+#Преподаватели
+Сергей Петрелевич
+Вадим Тисов
+Константин Тарасов
+Стрекалов Павел
+Александр Оруджев
+Вячеслав Лапин
+Виталий Куценко
+
+#Студент
+Narbaev Alexander (Нарбаев Александр)
+alexander.narbayev@gmail.com

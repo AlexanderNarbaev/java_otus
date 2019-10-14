@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>HW01_Project_Init_Module</artifactId>
-
+    <name>HW_01_Project_Init_Module</name>
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>

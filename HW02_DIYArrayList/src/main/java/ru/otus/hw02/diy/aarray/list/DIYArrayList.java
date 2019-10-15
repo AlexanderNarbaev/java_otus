@@ -7,23 +7,21 @@ import java.util.ListIterator;
 
 public class DIYArrayList implements List {
 
+    private static final int DEFAULT_INITIAL_SIZE = 10;
     private Object[] internalArray;
     private int size = 0;
 
     public DIYArrayList(int size) {
-        if (size >= 0) {
+        if (size > 0) {
             this.size = size;
             internalArray = new Object[size];
-            for (int i = 0; i < size; i++) {
-                internalArray[i] = null;
-            }
         } else {
-            internalArray = new Object[10];
+            internalArray = new Object[DEFAULT_INITIAL_SIZE];
         }
     }
 
     public DIYArrayList() {
-        internalArray = new Object[10];
+        internalArray = new Object[DEFAULT_INITIAL_SIZE];
     }
 
 
@@ -38,9 +36,9 @@ public class DIYArrayList implements List {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(Object containsValue) {
         for (int i = 0; i < size; i++) {
-            if (internalArray[i].equals(o)) {
+            if (internalArrayEquality(containsValue, internalArray[i])) {
                 return true;
             }
         }
@@ -49,39 +47,34 @@ public class DIYArrayList implements List {
 
     @Override
     public Iterator iterator() {
-        return new DIYIterator(internalArray);
+        return size == 0 ? null : new DIYArrayListIterator();
     }
 
     @Override
     public Object[] toArray() {
         Object[] temporalArray = new Object[size];
-        for (int i = 0; i < size; i++) {
-            temporalArray[i] = internalArray[i];
-        }
+        System.arraycopy(internalArray, 0, temporalArray, 0, size);
         return temporalArray;
     }
 
     @Override
-    public boolean add(Object o) {
+    public boolean add(Object valueToAdd) {
         if (internalArray.length >= size) {
-            Object[] temporalArray = new Object[internalArray.length + 1];
-            for (int i = 0; i < internalArray.length; i++) {
-                temporalArray[i] = internalArray[i];
-            }
-            internalArray = temporalArray;
+            extendInternalArray();
         }
-        internalArray[size] = o;
+        internalArray[size] = valueToAdd;
         size++;
         return true;
     }
 
+
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(Object valueToRemove) {
         Object[] temporalArray = new Object[internalArray.length];
         int insertionIndex = 0;
-        if (contains(o)) {
+        if (contains(valueToRemove)) {
             for (int i = 0; i < size; i++) {
-                if (!internalArray[i].equals(0)) {
+                if (!internalArrayEquality(valueToRemove, internalArray[i])) {
                     temporalArray[insertionIndex] = internalArray[i];
                     insertionIndex++;
                 }
@@ -93,19 +86,10 @@ public class DIYArrayList implements List {
         return false;
     }
 
-    @Override
-    public boolean addAll(Collection c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(int index, Collection c) {
-        return false;
-    }
 
     @Override
     public void clear() {
-        internalArray = new Object[10];
+        internalArray = new Object[DEFAULT_INITIAL_SIZE];
         size = 0;
     }
 
@@ -139,21 +123,30 @@ public class DIYArrayList implements List {
         size--;
     }
 
-    private void checkIndex(int index) {
-        if (index < 0 || index >= size) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-    }
-
     @Override
     public Object remove(int index) {
-        throw new UnsupportedOperationException();
+        checkIndex(index);
+        Object returnValue = null;
+        Object[] temporalArray = new Object[internalArray.length];
+        int insertionIndex = 0;
+        for (int i = 0; i < size; i++) {
+            if (i != index) {
+                temporalArray[insertionIndex] = internalArray[i];
+                insertionIndex++;
+            } else {
+
+                returnValue = internalArray[i];
+            }
+        }
+        internalArray = temporalArray;
+        size--;
+        return returnValue;
     }
 
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(Object valueToIndexSearch) {
         for (int i = 0; i < size; i++) {
-            if (internalArray[i].equals(o)) {
+            if (internalArrayEquality(valueToIndexSearch, internalArray[i])) {
                 return i;
             }
         }
@@ -161,14 +154,49 @@ public class DIYArrayList implements List {
     }
 
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object valueToIndexSearch) {
+        int lastIndex = -1;
+        for (int i = 0; i < size; i++) {
+            if (internalArrayEquality(valueToIndexSearch, internalArray[i])) {
+                lastIndex = i;
+            }
+        }
+        return lastIndex;
+    }
+
+    private boolean internalArrayEquality(Object objectToEqual, Object internalArrayObject) {
+        return (objectToEqual == null && internalArrayObject == null)
+                || (internalArrayObject != null && internalArrayObject.equals(objectToEqual))
+                || (internalArrayObject == objectToEqual);
+    }
+
+    private void checkIndex(int index) {
+        if (index < 0 || index > size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+    }
+
+    private void extendInternalArray() {
+        Object[] temporalArray = new Object[internalArray.length + 1];
+        System.arraycopy(internalArray, 0, temporalArray, 0, size);
+        internalArray = temporalArray;
+    }
+
+    @Override
+    public boolean addAll(Collection c) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean addAll(int index, Collection c) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public ListIterator listIterator() {
-        return new DIYArrayListIterator();
+        return size == 0 ? null : new DIYArrayListIterator();
     }
+
 
     @Override
     public ListIterator listIterator(int index) {

@@ -1,6 +1,6 @@
 package ru.otus.hw02;
 
-import ru.otus.hw02.diy.aarray.list.DIYArrayList;
+import ru.otus.hw02.diy.array.list.DIYArrayList;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -29,12 +29,7 @@ public class UsageDIYArrayList {
             selfArray.add(randomInt);
         }
         try {
-            Comparator<Integer> intComparator = new Comparator<>() {
-                @Override
-                public int compare(Integer o1, Integer o2) {
-                    return o1 - o2;
-                }
-            };
+            Comparator<Integer> intComparator = Comparator.comparingInt(o -> o);
             //Отсортируем их
             Collections.sort(usualArray, intComparator);
             Collections.sort(selfArray, intComparator);

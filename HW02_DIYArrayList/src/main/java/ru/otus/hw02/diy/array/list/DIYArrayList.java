@@ -1,4 +1,4 @@
-package ru.otus.hw02.diy.aarray.list;
+package ru.otus.hw02.diy.array.list;
 
 import java.util.Collection;
 import java.util.Iterator;

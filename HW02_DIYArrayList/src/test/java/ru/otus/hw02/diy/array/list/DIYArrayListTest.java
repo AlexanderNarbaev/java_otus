@@ -1,4 +1,4 @@
-package ru.otus.hw02.diy.aarray.list;
+package ru.otus.hw02.diy.array.list;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

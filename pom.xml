@@ -18,6 +18,7 @@
     <modules>
         <module>HW01_Project_Init_Module</module>
         <module>HW02_DIYArrayList</module>
+        <module>HW04_LOG_ANNO</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

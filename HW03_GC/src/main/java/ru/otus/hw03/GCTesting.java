@@ -7,36 +7,17 @@ import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class GCTesting {
+
+    private static HashMap<String, ArrayList<Long>> eventsMap = new HashMap<>();
+
     public static void main(String[] args) {
         System.out.println("Starting pid: " + ManagementFactory.getRuntimeMXBean().getName());
         switchOnMonitoring();
         long beginTime = System.currentTimeMillis();
-//        LinkedList<String> linkedList = new LinkedList<>();
-//        try {
-//            while (true) {
-//                System.out.println("LinkedList size:\t" + linkedList.size());
-//                for (int switcher = 0; switcher < 2_000_000; switcher++) {
-//                    linkedList.add(new String("My Very Big String Value For Index:\t" + switcher));
-//                }
-//                System.out.println("LinkedList size after add:\t" + linkedList.size());
-//                Iterator<String> iterator = linkedList.iterator();
-//                while (iterator.hasNext()) {
-//                    iterator.next();
-//                    iterator.next();
-//                    iterator.remove();
-//                }
-//                System.out.println("LinkedList size after trim:\t" + linkedList.size());
-//                Thread.sleep(3000);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.err.println(e);
-//        }
+
         long minimalAddTime = 1000;
         long maximumAddTime = 0;
         long averageAddTime = 0;
@@ -53,7 +34,7 @@ public class GCTesting {
         try {
             while (true) {
 
-                for (int switcher = 0; switcher < 150_000_000; switcher++) {
+                for (int switcher = 0; switcher < 2_306_000; switcher++) {
                     long beginAddTime = System.currentTimeMillis();
                     try {
                         simpleThread.addObject("My Very Big String Value For Index:\t" + switcher);
@@ -70,11 +51,6 @@ public class GCTesting {
                     averageAddTime = (maximumAddTime - minimalAddTime) / 2;
                     if (duration > minimalAddTime) {
                         addDelayCount++;
-                        System.out.println("minimalAddTime:\t" + minimalAddTime);
-                        System.out.println("maximumAddTime:\t" + maximumAddTime);
-                        System.out.println("averageAddTime:\t" + averageAddTime);
-                        System.out.println("addDelayCount:\t" + addDelayCount);
-                        System.out.println("failAddCount:\t" + failAddCount);
                     }
                 }
                 long beginTrimTime = System.currentTimeMillis();
@@ -93,11 +69,6 @@ public class GCTesting {
                 averageTrimTime = (maximumTrimTime - minimalTrimTime) / 2;
                 if (duration > minimalTrimTime) {
                     trimDelayCount++;
-                    System.out.println("minimalTrimTime:\t" + minimalTrimTime);
-                    System.out.println("maximumTrimTime:\t" + maximumTrimTime);
-                    System.out.println("averageTrimTime:\t" + averageTrimTime);
-                    System.out.println("trimDelayCount:\t" + trimDelayCount);
-                    System.out.println("failTrimCount:\t" + failTrimCount);
                 }
                 Thread.sleep(1000);
             }
@@ -115,6 +86,11 @@ public class GCTesting {
             System.err.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
             System.err.println("\n\n\n\n");
             e.printStackTrace();
+            System.err.println("\n\n\n\n");
+            for (String event : eventsMap.keySet()) {
+                System.out.println("Event:\t" + event + ", duration:\t" + eventsMap.get(event).get(0) + ", count:\t" + eventsMap.get(event).get(1));
+            }
+            System.err.println("\n\n\n\n");
         }
         System.out.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
 
@@ -132,10 +108,21 @@ public class GCTesting {
                     String gcAction = info.getGcAction();
                     String gcCause = info.getGcCause();
 
+
                     long startTime = info.getGcInfo().getStartTime();
                     long duration = info.getGcInfo().getDuration();
 
                     System.out.println("start:" + startTime + " Name:" + gcName + ", action:" + gcAction + ", gcCause:" + gcCause + "(" + duration + " ms)");
+
+                    if (eventsMap.get(gcAction) != null) {
+                        eventsMap.get(gcAction).set(0, eventsMap.get(gcAction).get(0) + duration);
+                        eventsMap.get(gcAction).set(1, eventsMap.get(gcAction).get(1) + 1L);
+                    } else {
+                        ArrayList<Long> gcEventParams = new ArrayList<>();
+                        gcEventParams.add(duration);
+                        gcEventParams.add(1L);
+                        eventsMap.put(gcAction, gcEventParams);
+                    }
                 }
             };
             emitter.addNotificationListener(listener, null, null);

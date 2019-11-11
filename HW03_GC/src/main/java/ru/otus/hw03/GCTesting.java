@@ -6,49 +6,49 @@ import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
 import java.lang.management.GarbageCollectorMXBean;
-import java.lang.management.ManagementFactory;
 import java.util.*;
 
 public class GCTesting {
 
     private static HashMap<String, ArrayList<Long>> eventsMap = new HashMap<>();
+    private static long minimalAddTime = 1000;
+    private static long maximumAddTime = 0;
+    private static long averageAddTime = 0;
+    private static long addDelayCount = 0;
+    private static long failAddCount = 0;
+
+    private static long minimalTrimTime = 1000;
+    private static long maximumTrimTime = 0;
+    private static long averageTrimTime = 0;
+    private static long trimDelayCount = 0;
+    private static long failTrimCount = 0;
+    private static long beginTime = 0;
+    private static long endTime = 0;
+    private static long initialGCEventCount = 0;
 
     public static void main(String[] args) {
-        System.out.println("Starting pid: " + ManagementFactory.getRuntimeMXBean().getName());
         switchOnMonitoring();
-        long beginTime = System.currentTimeMillis();
-
-        long minimalAddTime = 1000;
-        long maximumAddTime = 0;
-        long averageAddTime = 0;
-        long addDelayCount = 0;
-        long failAddCount = 0;
-
-        long minimalTrimTime = 0;
-        long maximumTrimTime = 0;
-        long averageTrimTime = 0;
-        long trimDelayCount = 0;
-        long failTrimCount = 0;
+        beginTime = System.currentTimeMillis();
+        endTime = beginTime + (5 * 60 * 1000);
         SimpleThread simpleThread = new SimpleThread();
         simpleThread.run();
         try {
-            while (true) {
-
-                for (int switcher = 0; switcher < 2_306_000; switcher++) {
+            while (System.currentTimeMillis() <= endTime) {
+                for (int switcher = 0; switcher < 2_300_000; switcher++) {
                     long beginAddTime = System.currentTimeMillis();
                     try {
                         simpleThread.addObject("My Very Big String Value For Index:\t" + switcher);
                     } catch (Exception e) {
                         failAddCount++;
                     }
-                    long duration = (System.currentTimeMillis() - beginAddTime) / 10;
+                    long duration = (System.currentTimeMillis() - beginAddTime);
                     if (duration < minimalAddTime) {
                         minimalAddTime = duration;
                     }
                     if (duration > maximumAddTime) {
                         maximumAddTime = duration;
                     }
-                    averageAddTime = (maximumAddTime - minimalAddTime) / 2;
+                    averageAddTime = (maximumAddTime + minimalAddTime) / 2;
                     if (duration > minimalAddTime) {
                         addDelayCount++;
                     }
@@ -59,60 +59,51 @@ public class GCTesting {
                 } catch (Exception e) {
                     failTrimCount++;
                 }
-                long duration = (System.currentTimeMillis() - beginTrimTime) / 10;
+                long duration = (System.currentTimeMillis() - beginTrimTime);
                 if (duration < minimalTrimTime) {
                     minimalTrimTime = duration;
                 }
                 if (duration > maximumTrimTime) {
                     maximumTrimTime = duration;
                 }
-                averageTrimTime = (maximumTrimTime - minimalTrimTime) / 2;
+                averageTrimTime = (maximumTrimTime + minimalTrimTime) / 2;
                 if (duration > minimalTrimTime) {
                     trimDelayCount++;
                 }
                 Thread.sleep(1000);
             }
         } catch (Throwable e) {
-            System.err.println("\n\n\n\n");
-            System.err.println("minimalAddTime:\t" + minimalAddTime);
-            System.err.println("maximumAddTime:\t" + maximumAddTime);
-            System.err.println("averageAddTime:\t" + averageAddTime);
-            System.err.println("addDelayCount:\t" + addDelayCount);
-            System.err.println("minimalTrimTime:\t" + minimalTrimTime);
-            System.err.println("maximumTrimTime:\t" + maximumTrimTime);
-            System.err.println("averageTrimTime:\t" + averageTrimTime);
-            System.err.println("trimDelayCount:\t" + trimDelayCount);
-            System.out.println("failTrimCount:\t" + failTrimCount);
-            System.err.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
-            System.err.println("\n\n\n\n");
             e.printStackTrace();
-            System.err.println("\n\n\n\n");
-            for (String event : eventsMap.keySet()) {
-                System.out.println("Event:\t" + event + ", duration:\t" + eventsMap.get(event).get(0) + ", count:\t" + eventsMap.get(event).get(1));
-            }
-            System.err.println("\n\n\n\n");
         }
-        System.out.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
 
+    }
+
+    private static void printDebugInfo() {
+        System.err.println("minimalAddTime:\t" + minimalAddTime);
+        System.err.println("maximumAddTime:\t" + maximumAddTime);
+        System.err.println("averageAddTime:\t" + averageAddTime);
+        System.err.println("addDelayCount:\t" + addDelayCount);
+        System.err.println("failAddCount:\t" + failAddCount);
+        System.err.println("minimalTrimTime:\t" + minimalTrimTime);
+        System.err.println("maximumTrimTime:\t" + maximumTrimTime);
+        System.err.println("averageTrimTime:\t" + averageTrimTime);
+        System.err.println("trimDelayCount:\t" + trimDelayCount);
+        System.err.println("failTrimCount:\t" + failTrimCount);
+        System.err.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
+        for (String event : eventsMap.keySet()) {
+            System.err.println("Event:\t" + event + ", duration:\t" + eventsMap.get(event).get(0) + ", count:\t" + eventsMap.get(event).get(1));
+        }
     }
 
     private static void switchOnMonitoring() {
         List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
         for (GarbageCollectorMXBean gcbean : gcbeans) {
-            System.out.println("GC name:" + gcbean.getName());
             NotificationEmitter emitter = (NotificationEmitter) gcbean;
             NotificationListener listener = (notification, handback) -> {
                 if (notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) {
                     GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
-                    String gcName = info.getGcName();
                     String gcAction = info.getGcAction();
-                    String gcCause = info.getGcCause();
-
-
-                    long startTime = info.getGcInfo().getStartTime();
                     long duration = info.getGcInfo().getDuration();
-
-                    System.out.println("start:" + startTime + " Name:" + gcName + ", action:" + gcAction + ", gcCause:" + gcCause + "(" + duration + " ms)");
 
                     if (eventsMap.get(gcAction) != null) {
                         eventsMap.get(gcAction).set(0, eventsMap.get(gcAction).get(0) + duration);
@@ -122,6 +113,10 @@ public class GCTesting {
                         gcEventParams.add(duration);
                         gcEventParams.add(1L);
                         eventsMap.put(gcAction, gcEventParams);
+                    }
+                    initialGCEventCount++;
+                    if (initialGCEventCount % 10 == 0) {
+                        printDebugInfo();
                     }
                 }
             };
@@ -153,7 +148,6 @@ class SimpleThread extends Thread {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(e);
             throw e;
         }
         return Boolean.TRUE;

@@ -8,6 +8,12 @@ import javax.management.openmbean.CompositeData;
 import java.lang.management.GarbageCollectorMXBean;
 import java.util.*;
 
+/**
+ * -Xms10G
+ * -Xmx10G
+ * -XX:+HeapDumpOnOutOfMemoryError
+ * -XX:+UseG1GC
+ */
 public class GCTesting {
 
     private static HashMap<String, ArrayList<Long>> eventsMap = new HashMap<>();
@@ -16,6 +22,7 @@ public class GCTesting {
     private static long averageAddTime = 0;
     private static long addDelayCount = 0;
     private static long failAddCount = 0;
+    private static long addThroughput = 0;
 
     private static long minimalTrimTime = 1000;
     private static long maximumTrimTime = 0;
@@ -25,19 +32,23 @@ public class GCTesting {
     private static long beginTime = 0;
     private static long endTime = 0;
     private static long initialGCEventCount = 0;
+    private static long workTime = 0;
+    private static long totalAddCount = 0;
 
     public static void main(String[] args) {
         switchOnMonitoring();
         beginTime = System.currentTimeMillis();
-        endTime = beginTime + (5 * 60 * 1000);
+        endTime = beginTime + (15 * 60 * 1000);
         SimpleThread simpleThread = new SimpleThread();
         simpleThread.run();
         try {
             while (System.currentTimeMillis() <= endTime) {
+                workTime = System.currentTimeMillis() - beginTime;
                 for (int switcher = 0; switcher < 2_300_000; switcher++) {
                     long beginAddTime = System.currentTimeMillis();
                     try {
-                        simpleThread.addObject("My Very Big String Value For Index:\t" + switcher);
+                        simpleThread.addObject("Yet Another Биг Руссиан And Spanish Very Big String Value For Index:\t" + switcher);
+                        totalAddCount++;
                     } catch (Exception e) {
                         failAddCount++;
                     }
@@ -84,12 +95,13 @@ public class GCTesting {
         System.err.println("averageAddTime:\t" + averageAddTime);
         System.err.println("addDelayCount:\t" + addDelayCount);
         System.err.println("failAddCount:\t" + failAddCount);
+        System.err.println("addThroughput:\t" + (totalAddCount / workTime));
         System.err.println("minimalTrimTime:\t" + minimalTrimTime);
         System.err.println("maximumTrimTime:\t" + maximumTrimTime);
         System.err.println("averageTrimTime:\t" + averageTrimTime);
         System.err.println("trimDelayCount:\t" + trimDelayCount);
         System.err.println("failTrimCount:\t" + failTrimCount);
-        System.err.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
+        System.err.println("time:" + workTime / 1000);
         for (String event : eventsMap.keySet()) {
             System.err.println("Event:\t" + event + ", duration:\t" + eventsMap.get(event).get(0) + ", count:\t" + eventsMap.get(event).get(1));
         }

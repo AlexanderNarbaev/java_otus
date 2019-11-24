@@ -7,4 +7,8 @@ public class CalculationClassImpl {
     public void calculation(int param) {
         System.out.println("Our calculation:\t" + (param * 2));
     }
+
+    public void calculation(int param, int param2) {
+        System.out.println("Our calculation with two param:\t" + (param * 2));
+    }
 }

@@ -7,21 +7,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CustomLoader {
-    public static SampleClass createInterfaceInstance() {
-        ClassLoader classLoader = CustomLoader.class.getClassLoader();
-        InvocationHandler handler = new CustomInvocationHandler(new SampleClassImpl());
+    public static SampleClass createInstance(Class<? extends SampleClass> clazz) {
+        ClassLoader classLoader = clazz.getClassLoader();
+        InvocationHandler handler = new CustomInvocationHandler(clazz);
         return (SampleClass) Proxy.newProxyInstance(classLoader,
                 new Class<?>[]{SampleClass.class}, handler);
     }
 
     static class CustomInvocationHandler implements InvocationHandler {
 
-        private SampleClassImpl sampleClass;
+        private SampleClass sampleClass;
         private ArrayList<Method> annotatedMethods = new ArrayList<>();
 
-        public CustomInvocationHandler(SampleClassImpl sampleClass) {
-            this.sampleClass = sampleClass;
-            for (Method method : sampleClass.getClass().getMethods()) {
+        public CustomInvocationHandler(Class<? extends SampleClass> clazz) {
+            try {
+                this.sampleClass = clazz.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            for (Method method : clazz.getMethods()) {
                 if (method.isAnnotationPresent(Log.class)) {
                     annotatedMethods.add(method);
                 }

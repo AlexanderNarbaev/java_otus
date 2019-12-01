@@ -17,6 +17,6 @@ public class LogMethodClassVisitor extends ClassVisitor {
                                      String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature,
                 exceptions);
-        return new PrintMessageMethodVisitor(mv, name, className);
+        return new PrintMessageMethodVisitor(mv, name, desc);
     }
 }

@@ -16,70 +16,51 @@ import java.util.*;
  */
 public class GCTesting {
 
-    private static HashMap<String, ArrayList<Long>> eventsMap = new HashMap<>();
-    private static long minimalAddTime = 1000;
-    private static long maximumAddTime = 0;
-    private static long averageAddTime = 0;
-    private static long addDelayCount = 0;
-    private static long failAddCount = 0;
-    private static long addThroughput = 0;
-
-    private static long minimalTrimTime = 1000;
-    private static long maximumTrimTime = 0;
-    private static long averageTrimTime = 0;
-    private static long trimDelayCount = 0;
-    private static long failTrimCount = 0;
-    private static long beginTime = 0;
-    private static long endTime = 0;
-    private static long initialGCEventCount = 0;
-    private static long workTime = 0;
-    private static long totalAddCount = 0;
-
     public static void main(String[] args) {
         switchOnMonitoring();
-        beginTime = System.currentTimeMillis();
-        endTime = beginTime + (15 * 60 * 1000);
+        Metrica.beginTime = System.currentTimeMillis();
+        Metrica.endTime = Metrica.beginTime + (15 * 60 * 1000);
         SimpleThread simpleThread = new SimpleThread();
         simpleThread.run();
         try {
-            while (System.currentTimeMillis() <= endTime) {
-                workTime = System.currentTimeMillis() - beginTime;
+            while (System.currentTimeMillis() <= Metrica.endTime) {
+                Metrica.workTime = System.currentTimeMillis() - Metrica.beginTime;
                 for (int switcher = 0; switcher < 2_300_000; switcher++) {
                     long beginAddTime = System.currentTimeMillis();
                     try {
                         simpleThread.addObject("Yet Another Биг Руссиан And Spanish Very Big String Value For Index:\t" + switcher);
-                        totalAddCount++;
+                        Metrica.totalAddCount++;
                     } catch (Exception e) {
-                        failAddCount++;
+                        Metrica.failAddCount++;
                     }
                     long duration = (System.currentTimeMillis() - beginAddTime);
-                    if (duration < minimalAddTime) {
-                        minimalAddTime = duration;
+                    if (duration < Metrica.minimalAddTime) {
+                        Metrica.minimalAddTime = duration;
                     }
-                    if (duration > maximumAddTime) {
-                        maximumAddTime = duration;
+                    if (duration > Metrica.maximumAddTime) {
+                        Metrica.maximumAddTime = duration;
                     }
-                    averageAddTime = (maximumAddTime + minimalAddTime) / 2;
-                    if (duration > minimalAddTime) {
-                        addDelayCount++;
+                    Metrica.averageAddTime = (Metrica.maximumAddTime + Metrica.minimalAddTime) / 2;
+                    if (duration > Metrica.minimalAddTime) {
+                        Metrica.addDelayCount++;
                     }
                 }
                 long beginTrimTime = System.currentTimeMillis();
                 try {
                     simpleThread.trimArray();
                 } catch (Exception e) {
-                    failTrimCount++;
+                    Metrica.failTrimCount++;
                 }
                 long duration = (System.currentTimeMillis() - beginTrimTime);
-                if (duration < minimalTrimTime) {
-                    minimalTrimTime = duration;
+                if (duration < Metrica.minimalTrimTime) {
+                    Metrica.minimalTrimTime = duration;
                 }
-                if (duration > maximumTrimTime) {
-                    maximumTrimTime = duration;
+                if (duration > Metrica.maximumTrimTime) {
+                    Metrica.maximumTrimTime = duration;
                 }
-                averageTrimTime = (maximumTrimTime + minimalTrimTime) / 2;
-                if (duration > minimalTrimTime) {
-                    trimDelayCount++;
+                Metrica.averageTrimTime = (Metrica.maximumTrimTime + Metrica.minimalTrimTime) / 2;
+                if (duration > Metrica.minimalTrimTime) {
+                    Metrica.trimDelayCount++;
                 }
                 Thread.sleep(1000);
             }
@@ -87,24 +68,6 @@ public class GCTesting {
             e.printStackTrace();
         }
 
-    }
-
-    private static void printDebugInfo() {
-        System.err.println("minimalAddTime:\t" + minimalAddTime);
-        System.err.println("maximumAddTime:\t" + maximumAddTime);
-        System.err.println("averageAddTime:\t" + averageAddTime);
-        System.err.println("addDelayCount:\t" + addDelayCount);
-        System.err.println("failAddCount:\t" + failAddCount);
-        System.err.println("addThroughput:\t" + (totalAddCount / workTime));
-        System.err.println("minimalTrimTime:\t" + minimalTrimTime);
-        System.err.println("maximumTrimTime:\t" + maximumTrimTime);
-        System.err.println("averageTrimTime:\t" + averageTrimTime);
-        System.err.println("trimDelayCount:\t" + trimDelayCount);
-        System.err.println("failTrimCount:\t" + failTrimCount);
-        System.err.println("time:" + workTime / 1000);
-        for (String event : eventsMap.keySet()) {
-            System.err.println("Event:\t" + event + ", duration:\t" + eventsMap.get(event).get(0) + ", count:\t" + eventsMap.get(event).get(1));
-        }
     }
 
     private static void switchOnMonitoring() {
@@ -117,18 +80,18 @@ public class GCTesting {
                     String gcAction = info.getGcAction();
                     long duration = info.getGcInfo().getDuration();
 
-                    if (eventsMap.get(gcAction) != null) {
-                        eventsMap.get(gcAction).set(0, eventsMap.get(gcAction).get(0) + duration);
-                        eventsMap.get(gcAction).set(1, eventsMap.get(gcAction).get(1) + 1L);
+                    if (Metrica.eventsMap.get(gcAction) != null) {
+                        Metrica.eventsMap.get(gcAction).set(0, Metrica.eventsMap.get(gcAction).get(0) + duration);
+                        Metrica.eventsMap.get(gcAction).set(1, Metrica.eventsMap.get(gcAction).get(1) + 1L);
                     } else {
                         ArrayList<Long> gcEventParams = new ArrayList<>();
                         gcEventParams.add(duration);
                         gcEventParams.add(1L);
-                        eventsMap.put(gcAction, gcEventParams);
+                        Metrica.eventsMap.put(gcAction, gcEventParams);
                     }
-                    initialGCEventCount++;
-                    if (initialGCEventCount % 10 == 0) {
-                        printDebugInfo();
+                    Metrica.initialGCEventCount++;
+                    if (Metrica.initialGCEventCount % 10 == 0) {
+                        Metrica.printDebugInfo();
                     }
                 }
             };
@@ -137,6 +100,46 @@ public class GCTesting {
     }
 
 
+}
+
+class Metrica {
+    static long minimalAddTime = 1000;
+    static long maximumAddTime = 0;
+    static long averageAddTime = 0;
+    static long addDelayCount = 0;
+    static long failAddCount = 0;
+    static long addThroughput = 0;
+
+    static long minimalTrimTime = 1000;
+    static long maximumTrimTime = 0;
+    static long averageTrimTime = 0;
+    static long trimDelayCount = 0;
+    static long failTrimCount = 0;
+    static long beginTime = 0;
+    static long endTime = 0;
+    static long initialGCEventCount = 0;
+    static long workTime = 0;
+    static long totalAddCount = 0;
+
+    static HashMap<String, ArrayList<Long>> eventsMap = new HashMap<>();
+
+    static void printDebugInfo() {
+        System.err.println("minimalAddTime:\t" + Metrica.minimalAddTime);
+        System.err.println("maximumAddTime:\t" + Metrica.maximumAddTime);
+        System.err.println("averageAddTime:\t" + Metrica.averageAddTime);
+        System.err.println("addDelayCount:\t" + Metrica.addDelayCount);
+        System.err.println("failAddCount:\t" + Metrica.failAddCount);
+        System.err.println("addThroughput:\t" + (Metrica.totalAddCount / Metrica.workTime));
+        System.err.println("minimalTrimTime:\t" + Metrica.minimalTrimTime);
+        System.err.println("maximumTrimTime:\t" + Metrica.maximumTrimTime);
+        System.err.println("averageTrimTime:\t" + Metrica.averageTrimTime);
+        System.err.println("trimDelayCount:\t" + Metrica.trimDelayCount);
+        System.err.println("failTrimCount:\t" + Metrica.failTrimCount);
+        System.err.println("time:" + Metrica.workTime / 1000);
+        for (String event : eventsMap.keySet()) {
+            System.err.println("Event:\t" + event + ", duration:\t" + eventsMap.get(event).get(0) + ", count:\t" + eventsMap.get(event).get(1));
+        }
+    }
 }
 
 class SimpleThread extends Thread {
@@ -154,7 +157,6 @@ class SimpleThread extends Thread {
         try {
             Iterator<Object> iterator = this.linkedList.iterator();
             while (iterator.hasNext()) {
-                iterator.next();
                 iterator.next();
                 iterator.remove();
             }

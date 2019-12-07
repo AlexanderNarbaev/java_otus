@@ -1,12 +1,16 @@
 package ru.otus.hw04.classloader;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CustomLoader {
+    private CustomLoader() {
+    }
+
     public static SampleClass createInstance(Class<? extends SampleClass> clazz) {
         ClassLoader classLoader = clazz.getClassLoader();
         InvocationHandler handler = new CustomInvocationHandler(clazz);
@@ -21,10 +25,8 @@ public class CustomLoader {
 
         public CustomInvocationHandler(Class<? extends SampleClass> clazz) {
             try {
-                this.sampleClass = clazz.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+                this.sampleClass = clazz.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
             for (Method method : clazz.getMethods()) {
@@ -47,7 +49,9 @@ public class CustomLoader {
                 System.out.print("invoking method:" + method + "with param's:\t");
                 int i = 1;
                 for (Object param : args) {
-                    System.out.print(i + " param type of " + param.getClass() + " with value " + param + ";\t");
+                    if (param != null) {
+                        System.out.print(i + " param type of " + param.getClass() + " with value " + param + ";\t");
+                    }
                     i++;
                 }
                 System.out.println();

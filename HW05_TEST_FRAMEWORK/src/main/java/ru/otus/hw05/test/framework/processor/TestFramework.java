@@ -4,6 +4,7 @@ import ru.otus.hw05.test.framework.exceptions.TestUnsuccessfulException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class TestFramework {
     private final TestPreparationResult testPreparationResult;
@@ -18,55 +19,16 @@ public class TestFramework {
     public void doTest() {
         if (testPreparationResult != null
                 && testPreparationResult.getTestMethods() != null) {
-            long totalTestsCount = 0;
+            long totalTestsCount = testPreparationResult.getTestMethods().size();
             long failTestsCount = 0;
-            long successTestsCount = 0;
-            if (testPreparationResult.getBeforeAllMethod() != null) {
+            try {
                 if (testPreparationResult.getBeforeAllMethod() != null) {
-                    try {
-                        testPreparationResult.getBeforeAllMethod().invoke(null);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    testPreparationResult.getBeforeAllMethod().invoke(null);
                 }
-                if (testPreparationResult.getTestMethods() != null && !testPreparationResult.getTestMethods().isEmpty()) {
-                    totalTestsCount = testPreparationResult.getTestMethods().size();
-                    boolean testFailed = false;
-                    for (Method method : testPreparationResult.getTestMethods()) {
-                        Object newObjectOfClazz = null;
-                        try {
-                            newObjectOfClazz = clazzToTest.getDeclaredConstructor().newInstance();
-                        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
-                        if (testPreparationResult.getBeforeEachMethod() != null) {
-                            try {
-                                testPreparationResult.getBeforeEachMethod().invoke(newObjectOfClazz);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        try {
-                            method.invoke(newObjectOfClazz);
-                        } catch (InvocationTargetException | IllegalAccessException e) {
-                            if (e.getCause() instanceof TestUnsuccessfulException) {
-                                failTestsCount++;
-                            }
-                            testFailed = true;
-                            e.printStackTrace();
-                        }
-                        if (testPreparationResult.getAfterEachMethod() != null) {
-                            try {
-                                testPreparationResult.getAfterEachMethod().invoke(newObjectOfClazz);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if (!testFailed) {
-                            successTestsCount++;
-                        }
-                    }
-                }
+                failTestsCount = testAnnotatedMethods(testPreparationResult.getTestMethods());
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
                 if (testPreparationResult.getAfterAllMethod() != null) {
                     try {
                         testPreparationResult.getAfterAllMethod().invoke(null);
@@ -74,10 +36,47 @@ public class TestFramework {
                         e.printStackTrace();
                     }
                 }
-                System.out.println("Всего тестов:" + totalTestsCount);
-                System.out.println("Не прошло тестов:" + failTestsCount);
-                System.out.println("Успешно тестов:" + successTestsCount);
+            }
+            System.out.println("Всего тестов:" + totalTestsCount);
+            System.out.println("Не прошло тестов:" + failTestsCount);
+            System.out.println("Успешно тестов:" + (totalTestsCount - failTestsCount));
+        }
+    }
+
+    private long testAnnotatedMethods(List<Method> testMethods) throws Exception {
+        long failTestsCount = 0;
+        for (Method method : testMethods) {
+            Object newObjectOfClazz = createNewClassInstance();
+            try {
+                doRegularTest(method, newObjectOfClazz);
+            } catch (Exception e) {
+                if (e.getCause() instanceof TestUnsuccessfulException) {
+                    failTestsCount++;
+                }
+                e.printStackTrace();
+            } finally {
+                if (testPreparationResult.getAfterEachMethod() != null) {
+                    testPreparationResult.getAfterEachMethod().invoke(newObjectOfClazz);
+                }
             }
         }
+        return failTestsCount;
+    }
+
+    private void doRegularTest(Method method, Object newObjectOfClazz) throws Exception {
+        if (testPreparationResult.getBeforeEachMethod() != null) {
+            testPreparationResult.getBeforeEachMethod().invoke(newObjectOfClazz);
+        }
+        method.invoke(newObjectOfClazz);
+    }
+
+    private Object createNewClassInstance() {
+        Object newObjectOfClazz = null;
+        try {
+            newObjectOfClazz = clazzToTest.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return newObjectOfClazz;
     }
 }

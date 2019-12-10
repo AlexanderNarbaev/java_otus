@@ -1,17 +1,17 @@
 package ru.otus.hw06.atm.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 public class ATM implements Serializable {
 
-    private final Set<ATMCassette> atmCassettes;
+    private final List<ATMCassette> atmCassettes;
 
-    public ATM(Set<ATMCassette> atmCassettes) {
+    public ATM(List<ATMCassette> atmCassettes) {
         this.atmCassettes = atmCassettes;
     }
 
-    public Set<ATMCassette> getAtmCassettes() {
+    public List<ATMCassette> getAtmCassettes() {
         return atmCassettes;
     }
 }

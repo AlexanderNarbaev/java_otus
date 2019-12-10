@@ -18,7 +18,15 @@ public class ATMCassette implements Serializable, Comparable<ATMCassette> {
         return currentCapacity;
     }
 
-    public void setCurrentCapacity(long currentCapacity) {
+    public void addBanknotes(long banknotesCount) {
+        setCurrentCapacity(getCurrentCapacity() + banknotesCount);
+    }
+
+    public void getBanknotes(long banknotesCount) {
+        setCurrentCapacity(getCurrentCapacity() - banknotesCount);
+    }
+
+    private void setCurrentCapacity(long currentCapacity) {
         this.currentCapacity = currentCapacity;
     }
 
@@ -28,6 +36,6 @@ public class ATMCassette implements Serializable, Comparable<ATMCassette> {
 
     @Override
     public int compareTo(ATMCassette anotherCassette) {
-        return anotherCassette.getNominal().getValue().compareTo(this.nominal.getValue());
+        return anotherCassette.getNominal().getValue() - this.nominal.getValue();
     }
 }

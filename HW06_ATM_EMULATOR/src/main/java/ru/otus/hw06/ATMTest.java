@@ -5,30 +5,43 @@ import ru.otus.hw06.atm.model.Nominal;
 import ru.otus.hw06.atm.service.BankATMService;
 import ru.otus.hw06.atm.service.BankATMServiceImpl;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Random;
 
 public class ATMTest {
     public static void main(String[] args) {
         BankATMService atmService = new BankATMServiceImpl();
-        HashMap<Nominal, Long> banknotes = new HashMap<>();
-        Random randomizer = new Random();
-        banknotes.put(Nominal.TEN, (long) randomizer.nextInt(10));
-        banknotes.put(Nominal.FIFTY, (long) randomizer.nextInt(10));
-        banknotes.put(Nominal.ONE_HUNDRED, (long) randomizer.nextInt(10));
-        banknotes.put(Nominal.TWO_HUNDRED, (long) randomizer.nextInt(10));
-        banknotes.put(Nominal.FIVE_HUNDRED, (long) randomizer.nextInt(10));
-        banknotes.put(Nominal.ONE_THOUSAND, (long) randomizer.nextInt(10));
-        banknotes.put(Nominal.TWO_THOUSAND, (long) randomizer.nextInt(10));
-        banknotes.put(Nominal.FIVE_THOUSAND, (long) randomizer.nextInt(10));
-        atmService.addMoney(banknotes);
+        atmService.addMoney(loadBankNotes(2));
+        System.out.println(atmService.getCurrentMoneySum());
+        atmService.addMoney(loadBankNotes(3));
+        System.out.println(atmService.getCurrentMoneySum());
+        atmService.addMoney(loadBankNotes(4));
         System.out.println(atmService.getCurrentMoneySum());
         try {
-            atmService.getMoney(BigDecimal.valueOf(randomizer.nextInt(100)));
+            for (int i = 0; i < 10; i++) {
+                int requestedSum = new Random().nextInt(1000) * 10;
+                System.out.println("Requested sum:\t" + requestedSum);
+                atmService.getMoney(requestedSum);
+                System.out.println(atmService.getCurrentMoneySum());
+            }
+
         } catch (InsufficientFundsException e) {
             e.printStackTrace();
         }
         System.out.println(atmService.getCurrentMoneySum());
+    }
+
+    private static HashMap<Nominal, Long> loadBankNotes(int bound) {
+        HashMap<Nominal, Long> banknotes = new HashMap<>();
+        Random randomizer = new Random();
+        banknotes.put(Nominal.TEN, (long) randomizer.nextInt(bound));
+        banknotes.put(Nominal.FIFTY, (long) randomizer.nextInt(bound));
+        banknotes.put(Nominal.ONE_HUNDRED, (long) randomizer.nextInt(bound));
+        banknotes.put(Nominal.TWO_HUNDRED, (long) randomizer.nextInt(bound));
+        banknotes.put(Nominal.FIVE_HUNDRED, (long) randomizer.nextInt(bound));
+        banknotes.put(Nominal.ONE_THOUSAND, (long) randomizer.nextInt(bound));
+        banknotes.put(Nominal.TWO_THOUSAND, (long) randomizer.nextInt(bound));
+        banknotes.put(Nominal.FIVE_THOUSAND, (long) randomizer.nextInt(bound));
+        return banknotes;
     }
 }

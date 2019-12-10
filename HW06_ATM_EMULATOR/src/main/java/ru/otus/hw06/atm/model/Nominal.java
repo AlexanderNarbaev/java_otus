@@ -20,7 +20,7 @@ public enum Nominal {
     /**
      * Числовое значение номинала
      */
-    private Integer value;
+    private int value;
 
     Nominal(String name, int value) {
         this.name = name;
@@ -31,7 +31,7 @@ public enum Nominal {
         return name;
     }
 
-    public Integer getValue() {
+    public int getValue() {
         return value;
     }
 }

@@ -3,7 +3,7 @@ package ru.otus.hw06.atm.model;
 /**
  * Номинал купюр
  */
-public enum Nominal {
+public enum Nominal implements Comparable<Nominal> {
     TEN("Десять", 10),
     FIFTY("Пятьдесят", 50),
     ONE_HUNDRED("Сто", 100),
@@ -20,7 +20,7 @@ public enum Nominal {
     /**
      * Числовое значение номинала
      */
-    private int value;
+    private Integer value;
 
     Nominal(String name, int value) {
         this.name = name;
@@ -31,7 +31,7 @@ public enum Nominal {
         return name;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
 }

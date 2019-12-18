@@ -1,11 +1,9 @@
 package ru.otus.hw06.atm.model;
 
-import java.io.Serializable;
-
 /**
  * Кассета для хранения купюр определенного номинала
  */
-public class ATMCassette implements Serializable, Comparable<ATMCassette> {
+public class ATMCassette implements Cassette, Comparable<ATMCassette> {
 
     private final Nominal nominal;
     private long currentCapacity = 0;
@@ -18,12 +16,20 @@ public class ATMCassette implements Serializable, Comparable<ATMCassette> {
         return currentCapacity;
     }
 
-    public void addBanknotes(long banknotesCount) {
-        setCurrentCapacity(getCurrentCapacity() + banknotesCount);
+    @Override
+    public void addBanknotes(long banknotesCount) throws IllegalATMOperation {
+        if (banknotesCount > 0) {
+            setCurrentCapacity(getCurrentCapacity() + banknotesCount);
+        } else throw new IllegalATMOperation(banknotesCount);
     }
 
-    public void getBanknotes(long banknotesCount) {
-        setCurrentCapacity(getCurrentCapacity() - banknotesCount);
+    @Override
+    public void getBanknotes(long banknotesCount) throws InsufficientFundsException, IllegalATMOperation {
+        if (banknotesCount > 0) {
+            if (banknotesCount <= currentCapacity) {
+                setCurrentCapacity(getCurrentCapacity() - banknotesCount);
+            } else throw new InsufficientFundsException(banknotesCount);
+        } else throw new IllegalATMOperation(banknotesCount);
     }
 
     private void setCurrentCapacity(long currentCapacity) {
@@ -36,6 +42,6 @@ public class ATMCassette implements Serializable, Comparable<ATMCassette> {
 
     @Override
     public int compareTo(ATMCassette anotherCassette) {
-        return anotherCassette.getNominal().getValue() - this.nominal.getValue();
+        return anotherCassette.getNominal().compareTo(this.nominal);
     }
 }

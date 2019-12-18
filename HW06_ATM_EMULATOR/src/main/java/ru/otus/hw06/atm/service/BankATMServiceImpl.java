@@ -1,9 +1,6 @@
 package ru.otus.hw06.atm.service;
 
-import ru.otus.hw06.atm.model.ATM;
-import ru.otus.hw06.atm.model.ATMCassette;
-import ru.otus.hw06.atm.model.InsufficientFundsException;
-import ru.otus.hw06.atm.model.Nominal;
+import ru.otus.hw06.atm.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,13 +30,17 @@ public class BankATMServiceImpl implements BankATMService {
     public void addMoney(Map<Nominal, Long> banknotes) {
         for (ATMCassette cassette : myATM.getAtmCassettes()) {
             if (banknotes.containsKey(cassette.getNominal())) {
-                cassette.addBanknotes(banknotes.get(cassette.getNominal()));
+                try {
+                    cassette.addBanknotes(banknotes.get(cassette.getNominal()));
+                } catch (IllegalATMOperation illegalATMOperation) {
+                    illegalATMOperation.printStackTrace();
+                }
             }
         }
     }
 
     @Override
-    public Map<Nominal, Long> getMoney(long moneySum) throws InsufficientFundsException {
+    public Map<Nominal, Long> getMoney(long moneySum) throws InsufficientFundsException, IllegalATMOperation {
         HashMap<Nominal, Long> returnValue = new HashMap<>();
         HashMap<ATMCassette, Long> reduceCassettes = new HashMap<>();
         for (ATMCassette cassette : myATM.getAtmCassettes()) {
@@ -58,15 +59,19 @@ public class BankATMServiceImpl implements BankATMService {
                         reduceCassettes.put(cassette, wholeCount);
                         moneySum -= wholeCount * nominalValue;
                         break;
-                    } else throw new InsufficientFundsException();
+                    } else throw new InsufficientFundsException(moneySum);
                 }
             }
         }
         if (returnValue.isEmpty()) {
-            throw new InsufficientFundsException();
+            throw new InsufficientFundsException(moneySum);
         }
         for (ATMCassette cassette : reduceCassettes.keySet()) {
-            myATM.getAtmCassettes().get(myATM.getAtmCassettes().indexOf(cassette)).getBanknotes(reduceCassettes.get(cassette));
+            try {
+                myATM.getAtmCassettes().get(myATM.getAtmCassettes().indexOf(cassette)).getBanknotes(reduceCassettes.get(cassette));
+            } catch (IllegalATMOperation | InsufficientFundsException e) {
+                throw e;
+            }
         }
         return returnValue;
     }

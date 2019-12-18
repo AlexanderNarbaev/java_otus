@@ -1,5 +1,6 @@
 package ru.otus.hw06;
 
+import ru.otus.hw06.atm.model.IllegalATMOperation;
 import ru.otus.hw06.atm.model.InsufficientFundsException;
 import ru.otus.hw06.atm.model.Nominal;
 import ru.otus.hw06.atm.service.BankATMService;
@@ -12,23 +13,21 @@ public class ATMTest {
     public static void main(String[] args) {
         BankATMService atmService = new BankATMServiceImpl();
         atmService.addMoney(loadBankNotes(2));
-        System.out.println(atmService.getCurrentMoneySum());
         atmService.addMoney(loadBankNotes(3));
-        System.out.println(atmService.getCurrentMoneySum());
         atmService.addMoney(loadBankNotes(4));
-        System.out.println(atmService.getCurrentMoneySum());
+        System.out.println("Summary at start to work:\t" + atmService.getCurrentMoneySum());
         try {
             for (int i = 0; i < 10; i++) {
                 int requestedSum = new Random().nextInt(1000) * 10;
                 System.out.println("Requested sum:\t" + requestedSum);
                 atmService.getMoney(requestedSum);
-                System.out.println(atmService.getCurrentMoneySum());
+                System.out.println("Current summary:\t" + atmService.getCurrentMoneySum());
             }
 
-        } catch (InsufficientFundsException e) {
+        } catch (InsufficientFundsException | IllegalATMOperation e) {
             e.printStackTrace();
         }
-        System.out.println(atmService.getCurrentMoneySum());
+        System.out.println("Summary at an end of work:\t" + atmService.getCurrentMoneySum());
     }
 
     private static HashMap<Nominal, Long> loadBankNotes(int bound) {

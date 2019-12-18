@@ -1,7 +1,5 @@
 package ru.otus.hw05.test.framework.processor;
 
-import ru.otus.hw05.test.framework.exceptions.TestUnsuccessfulException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -33,6 +31,7 @@ public class TestFramework {
                     try {
                         testPreparationResult.getAfterAllMethod().invoke(null);
                     } catch (Exception e) {
+                        failTestsCount++;
                         e.printStackTrace();
                     }
                 }
@@ -50,13 +49,16 @@ public class TestFramework {
             try {
                 doRegularTest(method, newObjectOfClazz);
             } catch (Exception e) {
-                if (e.getCause() instanceof TestUnsuccessfulException) {
-                    failTestsCount++;
-                }
+                failTestsCount++;
                 e.printStackTrace();
             } finally {
                 if (testPreparationResult.getAfterEachMethod() != null) {
-                    testPreparationResult.getAfterEachMethod().invoke(newObjectOfClazz);
+                    try {
+                        testPreparationResult.getAfterEachMethod().invoke(newObjectOfClazz);
+                    } catch (Exception e) {
+                        failTestsCount++;
+                        e.printStackTrace();
+                    }
                 }
             }
         }

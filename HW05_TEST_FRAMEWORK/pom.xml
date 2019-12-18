@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>HW05_TEST_FRAMEWORK</artifactId>
+    <artifactId>hw05_test_framework</artifactId>
 
-    <name>HW05_TEST_FRAMEWORK</name>
+    <name>hw05_test_framework</name>
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -8,9 +8,15 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>HW03_GC</artifactId>
 
-    <name>HW03_GC</name>
+    <artifactId>hw01_project_init_module</artifactId>
+    <name>hw01_project_init_module</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+    </dependencies>
 
     <packaging>jar</packaging>
 
@@ -27,7 +33,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.hw03.GCTesting</mainClass>
+                            <mainClass>ru.otus.hw01.HelloOtus</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -40,14 +46,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.2</version>
             </plugin>
         </plugins>
     </build>

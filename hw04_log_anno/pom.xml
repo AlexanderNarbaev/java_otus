@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>HW04_LOG_ANNO</artifactId>
+    <artifactId>hw04_log_anno</artifactId>
 
-    <name>HW04_LOG_ANNO</name>
+    <name>hw04_log_anno</name>
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

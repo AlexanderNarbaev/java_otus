@@ -16,12 +16,12 @@
     </developers>
 
     <modules>
-        <module>HW01_Project_Init_Module</module>
-        <module>HW02_DIYArrayList</module>
-        <module>HW03_GC</module>
-        <module>HW04_LOG_ANNO</module>
-        <module>HW05_TEST_FRAMEWORK</module>
-        <module>HW06_ATM_EMULATOR</module>
+        <module>hw01_project_init_module</module>
+        <module>hw02_DIYArrayList</module>
+        <module>hw03_gc</module>
+        <module>hw04_log_anno</module>
+        <module>hw05_test_framework</module>
+        <module>hw06_atm_emulator</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

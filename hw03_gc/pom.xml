@@ -8,14 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>HW02_DIYArrayList</name>
-    <artifactId>HW02_DIYArrayList</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>hw03_gc</artifactId>
+
+    <name>hw03_gc</name>
 
     <packaging>jar</packaging>
 
@@ -32,7 +27,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.hw02.UsageDIYArrayList</mainClass>
+                            <mainClass>ru.otus.hw03.GCTesting</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

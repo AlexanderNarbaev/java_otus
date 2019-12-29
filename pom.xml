@@ -20,6 +20,7 @@
         <module>HW02_DIYArrayList</module>
         <module>HW03_GC</module>
         <module>HW04_LOG_ANNO</module>
+        <module>HW05_TEST_FRAMEWORK</module>
         <module>HW06_ATM_EMULATOR</module>
     </modules>
     <properties>

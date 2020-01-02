@@ -1,5 +1,7 @@
 package ru.otus.hw05.test.framework.processor;
 
+import ru.otus.hw05.test.framework.annotations.*;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

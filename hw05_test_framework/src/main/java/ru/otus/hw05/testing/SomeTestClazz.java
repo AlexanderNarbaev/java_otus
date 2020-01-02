@@ -1,5 +1,6 @@
 package ru.otus.hw05.testing;
 
+import ru.otus.hw05.test.framework.annotations.*;
 import ru.otus.hw05.test.framework.exceptions.TestUnsuccessfulException;
 
 public class SomeTestClazz {

@@ -1,10 +1,10 @@
 package ru.otus.hw07;
 
-import ru.otus.hw07.atm.model.IllegalATMOperation;
-import ru.otus.hw07.atm.model.InsufficientFundsException;
-import ru.otus.hw07.atm.model.Nominal;
-import ru.otus.hw07.atm.service.BankATMService;
-import ru.otus.hw07.atm.service.BankATMServiceImpl;
+import ru.otus.hw07.financial.model.IllegalATMOperation;
+import ru.otus.hw07.financial.model.InsufficientFundsException;
+import ru.otus.hw07.financial.model.Nominal;
+import ru.otus.hw07.financial.service.BankATMService;
+import ru.otus.hw07.financial.service.BankATMServiceImpl;
 
 import java.util.HashMap;
 import java.util.Random;

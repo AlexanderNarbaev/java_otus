@@ -23,6 +23,7 @@
         <module>hw05_test_framework</module>
         <module>hw06_atm_emulator</module>
         <module>hw07_atm_department</module>
+        <module>hw08_JSONSerializable</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,6 +33,9 @@
         <junit.version>5.5.2</junit.version>
         <log4j.version>2.13.0</log4j.version>
         <lombok.version>1.18.10</lombok.version>
+        <javax.json-api.version>1.1.4</javax.json-api.version>
+        <javax.json.version>1.1.4</javax.json.version>
+        <gson.version>2.8.6</gson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -39,6 +43,21 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${com.google.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.json</groupId>
+                <artifactId>javax.json-api</artifactId>
+                <version>${javax.json-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.json</artifactId>
+                <version>${javax.json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -60,7 +79,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

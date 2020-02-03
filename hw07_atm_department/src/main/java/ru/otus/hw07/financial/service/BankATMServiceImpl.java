@@ -94,6 +94,8 @@ public class BankATMServiceImpl implements BankATMService {
 
     @Override
     public void restoreATMInitialState() {
-
+        for (CassetteService cassette : myATM.getAtmCassettes()) {
+            cassette.restoreInitialState();
+        }
     }
 }

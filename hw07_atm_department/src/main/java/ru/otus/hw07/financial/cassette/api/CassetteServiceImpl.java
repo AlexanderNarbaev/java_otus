@@ -12,7 +12,7 @@ import ru.otus.hw07.financial.model.Nominal;
 @Log4j2
 public class CassetteServiceImpl implements CassetteService<RussianRubbleCassette> {
 
-    private final CassetteStateManager stateManager;
+    private final CassetteStateManager<RussianRubbleCassette> stateManager;
     private RussianRubbleCassette cassette;
 
     public CassetteServiceImpl(Nominal nominal) {
@@ -40,12 +40,27 @@ public class CassetteServiceImpl implements CassetteService<RussianRubbleCassett
         try {
             cassette = getBanknotesAction.doCassetteAction(cassette);
         } catch (ATMException e) {
-            log.error("", e);
+            log.error("ATM Exception", e);
+            if (e instanceof IllegalATMOperation) throw new IllegalATMOperation(banknotesCount);
+            if (e instanceof InsufficientFundsException) throw new InsufficientFundsException(banknotesCount);
         }
     }
 
     @Override
     public void restoreInitialState() {
+        do {
+            RussianRubbleCassette russianRubbleCassette = null;
+            try {
+                russianRubbleCassette = stateManager.restoreCassetteState();
+            } catch (Exception e) {
+                log.error("Стек пуст");
+            }
+            if (russianRubbleCassette != null) {
+                cassette = russianRubbleCassette;
+            } else {
+                break;
+            }
+        } while (true);
 
     }
 

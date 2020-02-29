@@ -22,6 +22,7 @@
         <module>hw04_log_anno</module>
         <module>hw05_test_framework</module>
         <module>hw06_atm_emulator</module>
+        <module>hw07_atm_department</module>
         <module>hw08_JSONSerializable</module>
     </modules>
     <properties>

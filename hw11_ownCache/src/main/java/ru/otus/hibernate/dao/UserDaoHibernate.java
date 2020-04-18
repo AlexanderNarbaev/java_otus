@@ -22,9 +22,9 @@ public class UserDaoHibernate implements UserDao {
     private final SessionManagerHibernate sessionManager;
     private final HwCache<Long, User> userHwCache;
 
-    public UserDaoHibernate(SessionManagerHibernate sessionManager) {
+    public UserDaoHibernate(SessionManagerHibernate sessionManager, HwCache<Long, User> userCache) {
         this.sessionManager = sessionManager;
-        this.userHwCache = new MyCache<>();
+        this.userHwCache = userCache;
         this.userHwCache.addListener(new HwListener<Long, User>() {
             @Override
             public void notify(Long key, User value, String action) {
@@ -49,7 +49,6 @@ public class UserDaoHibernate implements UserDao {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-            userHwCache.put(id, null);
             return Optional.empty();
         }
     }
@@ -64,6 +63,7 @@ public class UserDaoHibernate implements UserDao {
             } else {
                 hibernateSession.persist(user);
             }
+            userHwCache.put(user.getId(), user);
             return user.getId();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

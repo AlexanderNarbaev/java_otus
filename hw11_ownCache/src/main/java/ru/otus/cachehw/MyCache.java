@@ -18,8 +18,11 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public void put(K key, V value) {
         listeners
                 .stream()
-                .filter(hwListenerWeakReference -> hwListenerWeakReference.get() != null)
-                .forEach(hwListenerWeakReference -> hwListenerWeakReference.get().notify(key, value, "PUT"));
+                .forEach(hwListenerWeakReference -> {
+                    if (hwListenerWeakReference.get() != null) {
+                        hwListenerWeakReference.get().notify(key, null, "PUT");
+                    }
+                });
         internalStore.put(key, value);
     }
 
@@ -27,8 +30,11 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public void remove(K key) {
         listeners
                 .stream()
-                .filter(hwListenerWeakReference -> hwListenerWeakReference.get() != null)
-                .forEach(hwListenerWeakReference -> hwListenerWeakReference.get().notify(key, null, "REMOVE"));
+                .forEach(hwListenerWeakReference -> {
+                    if (hwListenerWeakReference.get() != null) {
+                        hwListenerWeakReference.get().notify(key, null, "REMOVE");
+                    }
+                });
         internalStore.remove(key);
     }
 
@@ -44,7 +50,12 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public void removeListener(HwListener<K, V> listener) {
-        List<WeakReference<HwListener>> listenersToDelete = listeners.stream().filter(t -> t.get() != null && t.get().equals(listener)).collect(Collectors.toList());
+        List<WeakReference<HwListener>> listenersToDelete = listeners
+                .stream()
+                .filter(t ->
+                        (t.get() != null && t.get().equals(listener))
+                                || t.get() == null)
+                .collect(Collectors.toList());
         listeners.removeAll(listenersToDelete);
     }
 }

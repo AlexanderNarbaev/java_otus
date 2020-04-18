@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.AbstractHibernateTest;
+import ru.otus.cachehw.MyCache;
 import ru.otus.core.dao.UserDao;
 import ru.otus.core.model.User;
 import ru.otus.core.service.DBServiceUser;
@@ -25,7 +26,7 @@ public class WithAbstractionsTest extends AbstractHibernateTest {
     public void setUp() {
         super.setUp();
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
-        UserDao userDao = new UserDaoHibernate(sessionManager);
+        UserDao userDao = new UserDaoHibernate(sessionManager,new MyCache<>());
         dbServiceUser = new DbServiceUserImpl(userDao);
     }
 

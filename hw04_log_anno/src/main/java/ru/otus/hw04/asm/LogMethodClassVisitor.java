@@ -5,7 +5,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class LogMethodClassVisitor extends ClassVisitor {
-    private String className;
+    private final String className;
 
     public LogMethodClassVisitor(ClassVisitor cv, String pClassName) {
         super(Opcodes.ASM5, cv);

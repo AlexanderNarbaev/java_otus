@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Пользователи</title>
+    <script>
+        function getUserById() {
+            const userIdTextBox = document.getElementById('userIdTextBox');
+            const userDataContainer = document.getElementById('userDataContainer');
+            const id = userIdTextBox.value;
+            //fetch('api/user?id=' + id)
+            fetch('api/user/' + id)
+                .then(response => response.json())
+                .then(user => userDataContainer.innerHTML = JSON.stringify(user));
+        }
+
+        function saveUser() {
+            const userNameTextBox = document.getElementById('userNameTextBox');
+            const userLoginTextBox = document.getElementById('userLoginTextBox');
+            const userPasswordTextBox = document.getElementById('userPasswordTextBox');
+            const createdUserDataContainer = document.getElementById('createdUserDataContainer');
+            const name = userNameTextBox.value;
+            const login = userLoginTextBox.value;
+            const password = userPasswordTextBox.value;
+            fetch('api/user/', {
+                    method: 'post',
+                    headers: {
+                      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    },
+                    body: 'name='+name+'&'
+                        +'login='+login+'&'
+                        +'password='+password
+                  })
+                .then(response => response.json())
+                .then(user => createdUserDataContainer.innerHTML = JSON.stringify(user));
+        }
+
+
+
+
+    </script>
+</head>
+
+<body>
+<h4>Получить пользователя по id</h4>
+<input id="userIdTextBox" placeholder="Введите id пользователя" type="text" value="1">
+<button onclick="getUserById()">Получить</button>
+<pre id="userDataContainer"></pre>
+
+<div>
+    <h4>Создать пользователя</h4>
+    <input id="userNameTextBox" placeholder="Введите имя пользователя" type="text">
+    <input id="userLoginTextBox" placeholder="Введите логин пользователя" type="text">
+    <input id="userPasswordTextBox" placeholder="Введите пароль пользователя" type="text">
+    <button onclick="saveUser()">Сохранить</button>
+    <pre id="createdUserDataContainer"></pre>
+</div>
+
+<h4>Случайный пользователь</h4>
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 100px">Логин</td>
+        <td style="width: 100px">Пароль</td>
+    </tr>
+    </thead>
+    <tbody>
+    <#list users>
+    <#items as user>
+    <tr>
+        <td>${user.id}</td>
+        <td>${user.name}</td>
+        <td>${user.login}</td>
+        <td>${user.password}</td>
+    </tr>
+    </
+    #items>
+    <#else>
+    <p>No users
+    </#list>
+    </tbody>
+</table>
+</body>
+</html>

@@ -16,11 +16,11 @@ public enum Nominal implements Comparable<Nominal> {
     /**
      * Наименование номинала
      */
-    private String name;
+    private final String name;
     /**
      * Числовое значение номинала
      */
-    private Integer value;
+    private final Integer value;
 
     Nominal(String name, int value) {
         this.name = name;

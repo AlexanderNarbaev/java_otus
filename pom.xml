@@ -26,6 +26,7 @@
         <module>hw08_JSONSerializable</module>
         <module>hw09_JDBCTemplate</module>
         <module>hw10_Hibernate</module>
+        <module>hw12_webServer</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,13 +42,45 @@
         <h2.version>1.4.197</h2.version>
         <hibernate-core.version>5.4.4.Final</hibernate-core.version>
         <logback-classic.version>1.2.3</logback-classic.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <jetty.version>9.4.27.v20200227</jetty.version>
+        <freemarker.version>2.3.28</freemarker.version>
+        <junit-jupiter-api.version>5.5.1</junit-jupiter-api.version>
         <mockito-core.version>2.28.2</mockito-core.version>
         <assertj-core.version>3.13.2</assertj-core.version>
-        <junit-jupiter-api.version>5.5.1</junit-jupiter-api.version>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>

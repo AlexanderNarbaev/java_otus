@@ -26,6 +26,7 @@
         <module>hw08_JSONSerializable</module>
         <module>hw09_JDBCTemplate</module>
         <module>hw10_Hibernate</module>
+        <module>hw11_ownCache</module>
         <module>hw12_webServer</module>
     </modules>
     <properties>

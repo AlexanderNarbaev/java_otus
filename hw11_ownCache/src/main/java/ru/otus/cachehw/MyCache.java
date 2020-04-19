@@ -19,8 +19,9 @@ public class MyCache<K, V> implements HwCache<K, V> {
         listeners
                 .stream()
                 .forEach(hwListenerWeakReference -> {
-                    if (hwListenerWeakReference.get() != null) {
-                        hwListenerWeakReference.get().notify(key, null, "PUT");
+                    var listener = hwListenerWeakReference.get();
+                    if (listener != null) {
+                        listener.notify(key, value, "PUT");
                     }
                 });
         internalStore.put(key, value);
@@ -31,8 +32,9 @@ public class MyCache<K, V> implements HwCache<K, V> {
         listeners
                 .stream()
                 .forEach(hwListenerWeakReference -> {
-                    if (hwListenerWeakReference.get() != null) {
-                        hwListenerWeakReference.get().notify(key, null, "REMOVE");
+                    var listener = hwListenerWeakReference.get();
+                    if (listener != null) {
+                        listener.notify(key, null, "REMOVE");
                     }
                 });
         internalStore.remove(key);

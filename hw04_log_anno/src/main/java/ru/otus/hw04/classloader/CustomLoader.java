@@ -21,7 +21,7 @@ public class CustomLoader {
     static class CustomInvocationHandler implements InvocationHandler {
 
         private SampleClass sampleClass;
-        private ArrayList<Method> annotatedMethods = new ArrayList<>();
+        private final ArrayList<Method> annotatedMethods = new ArrayList<>();
 
         public CustomInvocationHandler(Class<? extends SampleClass> clazz) {
             try {

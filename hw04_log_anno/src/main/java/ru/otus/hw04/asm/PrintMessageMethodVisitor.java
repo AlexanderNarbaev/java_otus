@@ -10,8 +10,8 @@ public class PrintMessageMethodVisitor extends MethodVisitor {
     private static final String APPEND = "append";
     private static final String LJAVA_LANG_STRING_LJAVA_LANG_STRING_BUILDER = "(Ljava/lang/String;)Ljava/lang/StringBuilder;";
     private boolean isAnnotationPresent;
-    private String methodName;
-    private String methodDescriptor;
+    private final String methodName;
+    private final String methodDescriptor;
 
     public PrintMessageMethodVisitor(MethodVisitor mv, String name, String methodDescriptor) {
         super(Opcodes.ASM5, mv);

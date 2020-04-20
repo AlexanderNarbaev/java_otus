@@ -1,8 +1,8 @@
 package ru.otus.hw05.testing;
 
 public class ClazzNeedToBeTested {
-    private String interestingFieldOne;
-    private long interestingFieldTwo;
+    private final String interestingFieldOne;
+    private final long interestingFieldTwo;
 
     public ClazzNeedToBeTested(String interestingFieldOne, long interestingFieldTwo) {
         this.interestingFieldOne = interestingFieldOne;

@@ -5,11 +5,11 @@ import java.util.List;
 
 class TestPreparationResult {
 
-    private Method beforeAllMethod;
-    private Method beforeEachMethod;
-    private Method afterAllMethod;
-    private Method afterEachMethod;
-    private List<Method> testMethods;
+    private final Method beforeAllMethod;
+    private final Method beforeEachMethod;
+    private final Method afterAllMethod;
+    private final Method afterEachMethod;
+    private final List<Method> testMethods;
 
     public TestPreparationResult(Method beforeAllMethod, Method beforeEachMethod, Method afterAllMethod, Method afterEachMethod, List<Method> testMethods) {
         this.beforeAllMethod = beforeAllMethod;

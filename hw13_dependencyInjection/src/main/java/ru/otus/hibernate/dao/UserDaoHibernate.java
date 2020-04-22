@@ -23,18 +23,11 @@ public class UserDaoHibernate implements UserDao {
     private static final Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
 
     private final SessionManagerHibernate sessionManager;
-    private final HwCache<Long, User> userHwCache;
+
 
     @Autowired
     public UserDaoHibernate(SessionManagerHibernate sessionManager, HwCache<Long, User> userCache) {
         this.sessionManager = sessionManager;
-        this.userHwCache = userCache;
-        this.userHwCache.addListener(new HwListener<Long, User>() {
-            @Override
-            public void notify(Long key, User value, String action) {
-                logger.info("key:{}, value:{}, action: {}", key, value, action);
-            }
-        });
     }
     @Override
     public Optional<User> findById(long id) {

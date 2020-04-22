@@ -19,16 +19,16 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class UsersServlet extends HttpServlet {
+public class UsersController {
 
     private final DBServiceUser dbServiceUser;
 
     @Autowired
-    public UsersServlet(DBServiceUser dbServiceUser) {
+    public UsersController(DBServiceUser dbServiceUser) {
         this.dbServiceUser = dbServiceUser;
     }
 
-    @GetMapping("/user/list")
+    @GetMapping({"/", "user"})
     public String userListView(Model model) {
         model.addAttribute("users", dbServiceUser.getUsers().orElse(null));
         return "userList.html";
@@ -43,6 +43,6 @@ public class UsersServlet extends HttpServlet {
     @PostMapping("/user/save")
     public RedirectView userSave(@ModelAttribute User user) {
         dbServiceUser.saveUser(user);
-        return new RedirectView("/user/list", true);
+        return new RedirectView("/user", true);
     }
 }

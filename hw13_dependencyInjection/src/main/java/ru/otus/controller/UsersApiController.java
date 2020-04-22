@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.util.Map;
 
 @RestController
-public class UsersApiServlet extends HttpServlet {
+public class UsersApiController {
 
     private final DBServiceUser dbServiceUser;
 
     @Autowired
-    public UsersApiServlet(DBServiceUser dbServiceUser) {
+    public UsersApiController(DBServiceUser dbServiceUser) {
         this.dbServiceUser = dbServiceUser;
     }
 

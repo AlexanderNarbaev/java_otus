@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.otus.cachehw.HwCache;
-import ru.otus.cachehw.HwListener;
 import ru.otus.dao.UserDao;
 import ru.otus.dao.UserDaoException;
 import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
@@ -26,9 +24,10 @@ public class UserDaoHibernate implements UserDao {
 
 
     @Autowired
-    public UserDaoHibernate(SessionManagerHibernate sessionManager, HwCache<Long, User> userCache) {
+    public UserDaoHibernate(SessionManagerHibernate sessionManager) {
         this.sessionManager = sessionManager;
     }
+
     @Override
     public Optional<User> findById(long id) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();

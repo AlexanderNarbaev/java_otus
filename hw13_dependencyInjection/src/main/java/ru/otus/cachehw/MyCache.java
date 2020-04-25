@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class MyCache<K, V> implements HwCache<K, V> {
-    WeakHashMap<K, V> internalStore = new WeakHashMap<>();
-    List<WeakReference<HwListener>> listeners = new ArrayList<>();
+    private final WeakHashMap<K, V> internalStore = new WeakHashMap<>();
+    private final List<WeakReference<HwListener>> listeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {

@@ -10,14 +10,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.model.User;
 import ru.otus.services.DBServiceUser;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Controller
 public class UsersController {
 

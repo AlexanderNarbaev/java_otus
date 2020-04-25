@@ -1,24 +1,56 @@
 package ru.otus;
 
 import org.h2.jdbcx.JdbcDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan
 @EnableTransactionManagement
+@PropertySource("classpath:application.properties")
 public class HibernateConfig implements TransactionManagementConfigurer {
+
+    private static final Logger logger = LoggerFactory.getLogger(HibernateConfig.class);
+
+    private static final String MAIN_PACKAGE_NAME = "ru.otus.model";
+    private static final String HIBERNATE_DIALECT = "hibernate.dialect";
+    private static final String HIBERNATE_HBM_2_DDL_AUTO = "hibernate.hbm2ddl.auto";
+    private final String DATA_SOURCE_URL;
+    private final String DATA_SOURCE_USER;
+    private final String DATA_SOURCE_PASSWORD;
+    private final String HIBERNATE_HBM_2_DDL_AUTO_PROP_VALUE;
+    private final String HIBERNATE_DIALECT_PROP_VALUE;
+
+    public HibernateConfig(
+            @Value("${dataSourceURL}")
+                    String data_source_url,
+            @Value("${dataSourceUser}")
+                    String data_source_user,
+            @Value("${dataSourcePassword}")
+                    String data_source_password,
+            @Value("${hibernate.hbm2ddl.auto}")
+                    String hibernate_hbm_2_ddl_auto_prop_value,
+            @Value("${hibernate.dialect}")
+                    String hibernate_dialect_prop_value) {
+        DATA_SOURCE_URL = data_source_url;
+        DATA_SOURCE_USER = data_source_user;
+        DATA_SOURCE_PASSWORD = data_source_password;
+        HIBERNATE_HBM_2_DDL_AUTO_PROP_VALUE = hibernate_hbm_2_ddl_auto_prop_value;
+        HIBERNATE_DIALECT_PROP_VALUE = hibernate_dialect_prop_value;
+    }
+
     @Override
     public TransactionManager annotationDrivenTransactionManager() {
         return hibernateTransactionManager();
@@ -29,7 +61,7 @@ public class HibernateConfig implements TransactionManagementConfigurer {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("ru.otus.model");
+        sessionFactory.setPackagesToScan(MAIN_PACKAGE_NAME);
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;
@@ -38,9 +70,9 @@ public class HibernateConfig implements TransactionManagementConfigurer {
     @Bean
     public DataSource dataSource() {
         JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
-        dataSource.setUser("sa");
-        dataSource.setPassword("sa");
+        dataSource.setUrl(DATA_SOURCE_URL);
+        dataSource.setUser(DATA_SOURCE_USER);
+        dataSource.setPassword(DATA_SOURCE_PASSWORD);
 
         return dataSource;
     }
@@ -56,9 +88,9 @@ public class HibernateConfig implements TransactionManagementConfigurer {
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty(
-                "hibernate.hbm2ddl.auto", "create-drop");
+                HIBERNATE_HBM_2_DDL_AUTO, HIBERNATE_HBM_2_DDL_AUTO_PROP_VALUE);
         hibernateProperties.setProperty(
-                "hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+                HIBERNATE_DIALECT, HIBERNATE_DIALECT_PROP_VALUE);
         return hibernateProperties;
     }
 }

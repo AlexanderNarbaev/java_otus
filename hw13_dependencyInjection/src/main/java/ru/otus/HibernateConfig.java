@@ -27,29 +27,16 @@ public class HibernateConfig implements TransactionManagementConfigurer {
     private static final String MAIN_PACKAGE_NAME = "ru.otus.model";
     private static final String HIBERNATE_DIALECT = "hibernate.dialect";
     private static final String HIBERNATE_HBM_2_DDL_AUTO = "hibernate.hbm2ddl.auto";
-    private final String DATA_SOURCE_URL;
-    private final String DATA_SOURCE_USER;
-    private final String DATA_SOURCE_PASSWORD;
-    private final String HIBERNATE_HBM_2_DDL_AUTO_PROP_VALUE;
-    private final String HIBERNATE_DIALECT_PROP_VALUE;
-
-    public HibernateConfig(
-            @Value("${dataSourceURL}")
-                    String data_source_url,
-            @Value("${dataSourceUser}")
-                    String data_source_user,
-            @Value("${dataSourcePassword}")
-                    String data_source_password,
-            @Value("${hibernate.hbm2ddl.auto}")
-                    String hibernate_hbm_2_ddl_auto_prop_value,
-            @Value("${hibernate.dialect}")
-                    String hibernate_dialect_prop_value) {
-        DATA_SOURCE_URL = data_source_url;
-        DATA_SOURCE_USER = data_source_user;
-        DATA_SOURCE_PASSWORD = data_source_password;
-        HIBERNATE_HBM_2_DDL_AUTO_PROP_VALUE = hibernate_hbm_2_ddl_auto_prop_value;
-        HIBERNATE_DIALECT_PROP_VALUE = hibernate_dialect_prop_value;
-    }
+    @Value("${dataSourceURL}")
+    private String dataSourceUrl;
+    @Value("${dataSourceUser}")
+    private String dataSourceUser;
+    @Value("${dataSourcePassword}")
+    private String dataSourcePassword;
+    @Value("${hibernate.hbm2ddl.auto}")
+    private String hibernateHbm2DdlAutoPropValue;
+    @Value("${hibernate.dialect}")
+    private String hibernateDialectPropValue;
 
     @Override
     public TransactionManager annotationDrivenTransactionManager() {
@@ -70,9 +57,9 @@ public class HibernateConfig implements TransactionManagementConfigurer {
     @Bean
     public DataSource dataSource() {
         JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setUrl(DATA_SOURCE_URL);
-        dataSource.setUser(DATA_SOURCE_USER);
-        dataSource.setPassword(DATA_SOURCE_PASSWORD);
+        dataSource.setUrl(dataSourceUrl);
+        dataSource.setUser(dataSourceUser);
+        dataSource.setPassword(dataSourcePassword);
 
         return dataSource;
     }
@@ -88,9 +75,9 @@ public class HibernateConfig implements TransactionManagementConfigurer {
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty(
-                HIBERNATE_HBM_2_DDL_AUTO, HIBERNATE_HBM_2_DDL_AUTO_PROP_VALUE);
+                HIBERNATE_HBM_2_DDL_AUTO, hibernateHbm2DdlAutoPropValue);
         hibernateProperties.setProperty(
-                HIBERNATE_DIALECT, HIBERNATE_DIALECT_PROP_VALUE);
+                HIBERNATE_DIALECT, hibernateDialectPropValue);
         return hibernateProperties;
     }
 }

@@ -6,7 +6,6 @@ import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -27,90 +26,75 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private void processConfig(Set<Class<?>> configClasses) {
-        for (Class clazz : configClasses) {
+        for (Class<?> clazz : configClasses) {
             checkConfigClass(clazz);
-
         }
         initAppComponentsContainerConfig(getAnnotatedClasses(configClasses));
     }
 
-    private void initAppComponentsContainerConfig(Map<Annotation, List<Class>> annotatedClasses) {
-        for (Annotation annotation : sortAnnotatedClasses(annotatedClasses)) {
-            for (Class clazz : annotatedClasses.get(annotation)) {
-                try {
-                    createAppComponents(clazz.getConstructors()[0].newInstance(), (LinkedHashMap<Annotation, List<Method>>) getAnnotatedMethods(clazz.getMethods()));
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+    private void initAppComponentsContainerConfig(Set<Class<?>> annotatedClasses) {
+        for (Class<?> clazz : sortAnnotatedClasses(annotatedClasses)) {
+            try {
+                createAppComponents(clazz.getConstructors()[0].newInstance(), getAnnotatedMethods(clazz.getMethods()));
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
             }
         }
 
     }
 
-    private void createAppComponents(Object configObject, LinkedHashMap<Annotation, List<Method>> methodMap) throws IllegalAccessException, InvocationTargetException {
-        for (Annotation annotation : sortAnnotatedMethods(methodMap)) {
-            for (Method method : methodMap.get(annotation)) {
-                Object[] args = new Object[method.getParameterCount()];
-                for (int i = 0; i < method.getParameterCount(); i++) {
-                    args[i] = getAppComponent(method.getParameterTypes()[i]);
-                }
-                Object configuredBean = method.invoke(configObject, args);
-                appComponents.add(configuredBean);
-                appComponentsByName.put(((AppComponent) annotation).name(), configuredBean);
+    private void createAppComponents(Object configObject, Set<Method> methodSet) throws IllegalAccessException,
+            InvocationTargetException {
+        for (Method method : sortAnnotatedMethods(methodSet)) {
+            Object[] args = new Object[method.getParameterCount()];
+            for (int i = 0; i < method.getParameterCount(); i++) {
+                args[i] = getAppComponent(method.getParameterTypes()[i]);
             }
+            Object configuredBean = method.invoke(configObject, args);
+            appComponents.add(configuredBean);
+            appComponentsByName.put(method.getAnnotation(AppComponent.class).name(), configuredBean);
         }
     }
 
-    private List<Annotation> sortAnnotatedMethods(Map<Annotation, List<Method>> methodMap) {
-        return methodMap.keySet().stream().sorted((o1, o2) -> {
-            if (o1 instanceof AppComponent
-                    && o2 instanceof AppComponent) {
-                return ((AppComponent) o1).order() - ((AppComponent) o2).order();
+    private List<Method> sortAnnotatedMethods(Set<Method> methodSet) {
+        return methodSet.stream().sorted((o1, o2) -> {
+            if (o1.getAnnotation(AppComponent.class) != null
+                    && o2.getAnnotation(AppComponent.class) != null) {
+                return o1.getAnnotation(AppComponent.class).order() - o2.getAnnotation(AppComponent.class).order();
             }
             return 0;
         }).collect(Collectors.toList());
     }
 
-    private List<Annotation> sortAnnotatedClasses(Map<Annotation, List<Class>> classesMap) {
-        return classesMap.keySet().stream().sorted((o1, o2) -> {
-            if (o1 instanceof AppComponentsContainerConfig
-                    && o2 instanceof AppComponentsContainerConfig) {
-                return ((AppComponentsContainerConfig) o1).order() - ((AppComponentsContainerConfig) o2).order();
+    private List<Class<?>> sortAnnotatedClasses(Set<Class<?>> classesMap) {
+        return classesMap.stream().sorted((o1, o2) -> {
+            if (o1.getAnnotation(AppComponentsContainerConfig.class) != null
+                    && o2.getAnnotation(AppComponentsContainerConfig.class) != null) {
+                return o1.getAnnotation(AppComponentsContainerConfig.class).order()
+                        - o1.getAnnotation(AppComponentsContainerConfig.class).order();
             }
             return 0;
         }).collect(Collectors.toList());
     }
 
-    private Map<Annotation, List<Method>> getAnnotatedMethods(Method[] methods) {
-        LinkedHashMap<Annotation, List<Method>> methodMap = new LinkedHashMap<>();
+    private Set<Method> getAnnotatedMethods(Method[] methods) {
+        Set<Method> methodSet = new HashSet<>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(AppComponent.class)) {
-                if (methodMap.containsKey(method.getAnnotation(AppComponent.class))) {
-                    methodMap.get(method.getAnnotation(AppComponent.class)).add(method);
-                } else {
-                    List<Method> methodsWithAnno = new ArrayList<>();
-                    methodsWithAnno.add(method);
-                    methodMap.put(method.getAnnotation(AppComponent.class), methodsWithAnno);
-                }
+                methodSet.add(method);
             }
         }
-        return methodMap;
+        return methodSet;
     }
 
-    private Map<Annotation, List<Class>> getAnnotatedClasses(Set<Class<?>> classes) {
-        LinkedHashMap<Annotation, List<Class>> classesMap = new LinkedHashMap<>();
-        for (Class clazz : classes) {
+    private Set<Class<?>> getAnnotatedClasses(Set<Class<?>> classes) {
+        Set<Class<?>> filteredClasses = new HashSet<>();
+        for (Class<?> clazz : classes) {
             if (clazz.isAnnotationPresent(AppComponentsContainerConfig.class)) {
-                if (classesMap.containsKey(clazz.getAnnotation(AppComponentsContainerConfig.class))) {
-                    classesMap.get(clazz.getAnnotation(AppComponentsContainerConfig.class)).add(clazz);
-                } else {
-                    List<Class> classesWithAnno = new ArrayList<>();
-                    classesWithAnno.add(clazz);
-                    classesMap.put(clazz.getAnnotation(AppComponentsContainerConfig.class), classesWithAnno);
-                }
+                filteredClasses.add(clazz);
             }
         }
-        return classesMap;
+        return filteredClasses;
     }
 
     private void checkConfigClass(Class<?> configClass) {

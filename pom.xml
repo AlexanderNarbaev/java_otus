@@ -30,6 +30,7 @@
         <module>hw12_webServer</module>
         <module>hw13_dependencyInjection</module>
         <module>hw13_additionalHW</module>
+        <module>hw14_JMM_Thread</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

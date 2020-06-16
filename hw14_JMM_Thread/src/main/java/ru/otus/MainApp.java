@@ -15,7 +15,14 @@ public class MainApp {
                 while (printed == initialState) {
                     wait();
                 }
-                System.out.println(Thread.currentThread().getName() + ": " + (printed ? (reverse ? --count : ++count) : count));
+                if (printed) {
+                    if (reverse) {
+                        --count;
+                    } else {
+                        ++count;
+                    }
+                }
+                System.out.println(Thread.currentThread().getName() + ": " + count);
                 printed = !printed;
                 if (count >= 10) {
                     reverse = true;

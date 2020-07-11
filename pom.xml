@@ -30,6 +30,7 @@
         <module>hw12_webServer</module>
         <module>hw13_dependencyInjection</module>
         <module>hw13_additionalHW</module>
+        <module>hw14_new_Spring_MVC</module>
         <module>hw14_JMM_Thread</module>
     </modules>
     <properties>

@@ -30,7 +30,7 @@ public class UserRestController {
         return usersService.getUser(usersService.saveUser(user)).orElse(null);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/user/random")
+    @GetMapping("/api/user/random")
     public User findRandom() {
         return usersService.getUsers().map(userList -> userList.get(ThreadLocalRandom.current().nextInt(0, userList.size()))).orElse(null);
     }

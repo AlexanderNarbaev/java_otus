@@ -9,10 +9,19 @@ targetCompatibility = JavaVersion.VERSION_13
 dependencies {
 
     implementation project(':MessageSystem')
+    implementation project(':DataVault')
 
 
     implementation("org.springframework.boot:spring-boot-starter-websocket")
 
+    implementation("com.zaxxer:HikariCP")
+
+    implementation("com.h2database:h2")
+
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-orm")
+    implementation("org.springframework:spring-webmvc")
+    implementation("org.springframework:spring-web")
     implementation("org.webjars:webjars-locator-core")
     implementation("org.webjars:sockjs-client:${Versions.sockjs}")
     implementation("org.webjars:stomp-websocket:${Versions.stomp}")

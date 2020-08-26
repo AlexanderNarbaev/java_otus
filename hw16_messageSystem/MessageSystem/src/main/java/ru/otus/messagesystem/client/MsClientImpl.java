@@ -8,7 +8,7 @@ import ru.otus.messagesystem.RequestHandler;
 import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageBuilder;
 import ru.otus.messagesystem.message.MessageType;
-import ru.otus.model.ResultDataType;
+import ru.otus.messagesystem.model.ResultDataType;
 
 import java.util.Objects;
 

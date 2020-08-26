@@ -7,6 +7,8 @@ public interface MessageSystem {
 
     void addClient(MsClient msClient);
 
+    MsClient getClient(String msClientName);
+
     void removeClient(String clientId);
 
     boolean newMessage(Message msg);

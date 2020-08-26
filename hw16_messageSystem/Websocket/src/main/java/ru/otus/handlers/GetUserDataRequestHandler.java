@@ -1,16 +1,19 @@
 package ru.otus.handlers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import ru.otus.messagesystem.RequestHandler;
 import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageBuilder;
 import ru.otus.messagesystem.message.MessageHelper;
-import ru.otus.model.User;
+import ru.otus.model.UserSystemMessage;
 import ru.otus.services.DBServiceUser;
 
 import java.util.Optional;
 
-
-public class GetUserDataRequestHandler implements RequestHandler<User> {
+@Controller
+public class GetUserDataRequestHandler implements RequestHandler<UserSystemMessage> {
+    @Autowired
     private final DBServiceUser dbService;
 
     public GetUserDataRequestHandler(DBServiceUser dbService) {
@@ -19,8 +22,8 @@ public class GetUserDataRequestHandler implements RequestHandler<User> {
 
     @Override
     public Optional<Message> handle(Message msg) {
-        User userData = MessageHelper.getPayload(msg);
-        userData.setId(dbService.saveUser(userData));
-        return Optional.of(MessageBuilder.buildReplyMessage(msg, userData));
+        UserSystemMessage userSystemMessage = MessageHelper.getPayload(msg);
+        userSystemMessage.getUser().setId(dbService.saveUser(userSystemMessage.getUser()));
+        return Optional.of(MessageBuilder.buildReplyMessage(msg, userSystemMessage));
     }
 }

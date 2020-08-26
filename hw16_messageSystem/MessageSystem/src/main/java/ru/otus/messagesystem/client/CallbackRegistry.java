@@ -1,6 +1,6 @@
 package ru.otus.messagesystem.client;
 
-import ru.otus.model.ResultDataType;
+import ru.otus.messagesystem.model.ResultDataType;
 
 public interface CallbackRegistry {
     void put(CallbackId id, MessageCallback<? extends ResultDataType> callback);

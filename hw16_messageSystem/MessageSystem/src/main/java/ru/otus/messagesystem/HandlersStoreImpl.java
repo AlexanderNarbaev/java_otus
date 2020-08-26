@@ -1,7 +1,7 @@
 package ru.otus.messagesystem;
 
 import ru.otus.messagesystem.message.MessageType;
-import ru.otus.model.ResultDataType;
+import ru.otus.messagesystem.model.ResultDataType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -2,7 +2,7 @@ package ru.otus.messagesystem.client;
 
 import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageType;
-import ru.otus.model.ResultDataType;
+import ru.otus.messagesystem.model.ResultDataType;
 
 public interface MsClient {
 

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-library'
 }
 sourceCompatibility = JavaVersion.VERSION_13
 targetCompatibility = JavaVersion.VERSION_13
@@ -7,19 +8,9 @@ targetCompatibility = JavaVersion.VERSION_13
 dependencies {
     implementation("ch.qos.logback:logback-classic")
     implementation("org.reflections:reflections:${Versions.reflections}")
-    implementation("com.h2database:h2")
-    implementation("org.hibernate:hibernate-core")
-    implementation("com.zaxxer:HikariCP")
-    implementation("org.springframework:spring-context")
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    implementation("org.springframework:spring-context")
-    implementation("org.springframework:spring-orm")
-    implementation("org.springframework:spring-webmvc")
-    implementation("org.springframework:spring-web")
-    implementation("org.thymeleaf:thymeleaf")
-    implementation("org.thymeleaf:thymeleaf-spring5")
+    api("org.hibernate:hibernate-core")
 
-    implementation("javax.servlet:javax.servlet-api")
+    implementation("org.springframework:spring-context")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

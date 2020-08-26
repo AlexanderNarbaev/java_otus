@@ -7,7 +7,6 @@ sourceCompatibility = JavaVersion.VERSION_13
 targetCompatibility = JavaVersion.VERSION_13
 
 dependencies {
-    api project(':DataVault')
     implementation("ch.qos.logback:logback-classic")
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine")

@@ -1,6 +1,6 @@
 package ru.otus.messagesystem.client;
 
-import ru.otus.model.ResultDataType;
+import ru.otus.messagesystem.model.ResultDataType;
 
 import java.util.function.Consumer;
 

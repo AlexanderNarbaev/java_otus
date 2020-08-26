@@ -7,14 +7,7 @@ import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageBuilder;
 
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,15 +33,15 @@ public final class MessageSystemImpl implements MessageSystem {
     private final ExecutorService msgHandler = Executors.newFixedThreadPool(MSG_HANDLER_THREAD_LIMIT,
             new ThreadFactory() {
 
-        private final AtomicInteger threadNameSeq = new AtomicInteger(0);
+                private final AtomicInteger threadNameSeq = new AtomicInteger(0);
 
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable);
-            thread.setName("msg-handler-thread-" + threadNameSeq.incrementAndGet());
-            return thread;
-        }
-    });
+                @Override
+                public Thread newThread(Runnable runnable) {
+                    Thread thread = new Thread(runnable);
+                    thread.setName("msg-handler-thread-" + threadNameSeq.incrementAndGet());
+                    return thread;
+                }
+            });
 
     public MessageSystemImpl() {
         start();
@@ -77,6 +70,14 @@ public final class MessageSystemImpl implements MessageSystem {
             throw new IllegalArgumentException("Error. client: " + msClient.getName() + " already exists");
         }
         clientMap.put(msClient.getName(), msClient);
+    }
+
+    @Override
+    public MsClient getClient(String msClientName) {
+        if (clientMap.containsKey(msClientName)) {
+            return clientMap.get(msClientName);
+        }
+        return null;
     }
 
     @Override

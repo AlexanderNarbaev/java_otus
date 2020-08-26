@@ -1,4 +1,4 @@
-package ru.otus.model;
+package ru.otus.messagesystem.model;
 
 import java.io.Serializable;
 

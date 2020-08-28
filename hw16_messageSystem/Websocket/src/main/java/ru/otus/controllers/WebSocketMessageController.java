@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import ru.otus.domain.NewUserMessage;
 import ru.otus.domain.WebSocketMessage;
@@ -23,12 +24,16 @@ import static ru.otus.MessageSystemConfig.FRONTEND_SERVICE_CLIENT_NAME;
 public class WebSocketMessageController {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketMessageController.class);
 
+
+    private final SimpMessagingTemplate template;
+
     @Autowired
     private final DBServiceUser usersService;
     @Autowired
     private final MessageSystem messageSystem;
 
-    public WebSocketMessageController(DBServiceUser usersService, MessageSystem messageSystem) {
+    public WebSocketMessageController(SimpMessagingTemplate template, DBServiceUser usersService, MessageSystem messageSystem) {
+        this.template = template;
         this.usersService = usersService;
         this.messageSystem = messageSystem;
     }
@@ -47,7 +52,7 @@ public class WebSocketMessageController {
         logger.info("got newUserMessage:{}", newUserMessage);
         MsClient frontendClient = messageSystem.getClient(FRONTEND_SERVICE_CLIENT_NAME);
         Message outMsg = frontendClient.produceMessage(DATABASE_SERVICE_CLIENT_NAME, new UserSystemMessage(new User(0L, newUserMessage.getName(), newUserMessage.getLogin(), newUserMessage.getPassword())),
-                MessageType.USER_DATA, t -> this.sendMessage());
+                MessageType.USER_DATA, t -> this.template.convertAndSend("/topic/usersList", this.sendMessage()));
         frontendClient.sendMessage(outMsg);
     }
 }

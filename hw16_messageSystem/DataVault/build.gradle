@@ -10,8 +10,6 @@ dependencies {
     implementation("org.reflections:reflections:${Versions.reflections}")
     api("org.hibernate:hibernate-core")
 
-    implementation("org.springframework:spring-context")
-
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

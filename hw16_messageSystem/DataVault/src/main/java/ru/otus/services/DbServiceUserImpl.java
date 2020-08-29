@@ -2,8 +2,6 @@ package ru.otus.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import ru.otus.cachehw.HwCache;
 import ru.otus.cachehw.HwListener;
 import ru.otus.dao.UserDao;
@@ -13,14 +11,12 @@ import ru.otus.sessionmanager.SessionManager;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class DbServiceUserImpl implements DBServiceUser {
     private static final Logger logger = LoggerFactory.getLogger(DbServiceUserImpl.class);
 
     private final UserDao userDao;
     private final HwCache<Long, User> userHwCache;
 
-    @Autowired
     public DbServiceUserImpl(UserDao userDao, HwCache<Long, User> userHwCache) {
         this.userDao = userDao;
         this.userHwCache = userHwCache;

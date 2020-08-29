@@ -2,7 +2,6 @@ package ru.otus.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,10 +25,7 @@ public class WebSocketMessageController {
 
 
     private final SimpMessagingTemplate template;
-
-    @Autowired
     private final DBServiceUser usersService;
-    @Autowired
     private final MessageSystem messageSystem;
 
     public WebSocketMessageController(SimpMessagingTemplate template, DBServiceUser usersService, MessageSystem messageSystem) {

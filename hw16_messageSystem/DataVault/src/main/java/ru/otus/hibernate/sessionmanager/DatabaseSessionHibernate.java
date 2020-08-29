@@ -13,14 +13,17 @@ public class DatabaseSessionHibernate implements DatabaseSession {
         this.transaction = session.beginTransaction();
     }
 
-    public Session getHibernateSession() {
+    @Override
+    public Session getSession() {
         return session;
     }
 
+    @Override
     public Transaction getTransaction() {
         return transaction;
     }
 
+    @Override
     public void close() {
         if (transaction.isActive()) {
             transaction.commit();

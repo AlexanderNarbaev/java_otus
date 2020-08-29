@@ -3,18 +3,14 @@ package ru.otus.hibernate.sessionmanager;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import ru.otus.sessionmanager.SessionManager;
 import ru.otus.sessionmanager.SessionManagerException;
 
-@Component
 public class SessionManagerHibernate implements SessionManager {
 
     private final SessionFactory sessionFactory;
     private DatabaseSessionHibernate databaseSession;
 
-    @Autowired
     public SessionManagerHibernate(SessionFactory sessionFactory) {
         if (sessionFactory == null) {
             throw new SessionManagerException("SessionFactory is null");
@@ -36,7 +32,7 @@ public class SessionManagerHibernate implements SessionManager {
         checkSessionAndTransaction();
         try {
             databaseSession.getTransaction().commit();
-            databaseSession.getHibernateSession().close();
+            databaseSession.getSession().close();
         } catch (Exception e) {
             throw new SessionManagerException(e);
         }
@@ -47,7 +43,7 @@ public class SessionManagerHibernate implements SessionManager {
         checkSessionAndTransaction();
         try {
             databaseSession.getTransaction().rollback();
-            databaseSession.getHibernateSession().close();
+            databaseSession.getSession().close();
         } catch (Exception e) {
             throw new SessionManagerException(e);
         }
@@ -58,7 +54,7 @@ public class SessionManagerHibernate implements SessionManager {
         if (databaseSession == null) {
             return;
         }
-        Session session = databaseSession.getHibernateSession();
+        Session session = databaseSession.getSession();
         if (session == null || !session.isConnected()) {
             return;
         }
@@ -86,7 +82,7 @@ public class SessionManagerHibernate implements SessionManager {
         if (databaseSession == null) {
             throw new SessionManagerException("DatabaseSession not opened ");
         }
-        Session session = databaseSession.getHibernateSession();
+        Session session = databaseSession.getSession();
         if (session == null || !session.isConnected()) {
             throw new SessionManagerException("Session not opened ");
         }

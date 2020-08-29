@@ -1,7 +1,5 @@
 package ru.otus.cachehw;
 
-import org.springframework.stereotype.Component;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.stream.Collectors;
  * @author sergey
  * created on 14.12.18.
  */
-@Component
 public class MyCache<K, V> implements HwCache<K, V> {
     private final WeakHashMap<K, V> internalStore = new WeakHashMap<>();
     private final List<WeakReference<HwListener>> listeners = new ArrayList<>();

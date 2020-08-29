@@ -19,20 +19,23 @@ import ru.otus.messagesystem.client.MsClientImpl;
 import ru.otus.messagesystem.message.MessageType;
 import ru.otus.model.User;
 import ru.otus.model.UserSystemMessage;
+import ru.otus.service.FrontendService;
+import ru.otus.service.FrontendServiceImpl;
 import ru.otus.services.DBServiceUser;
 import ru.otus.services.DbServiceUserImpl;
 import ru.otus.sessionmanager.SessionManager;
 
 @Configuration
 public class MessageSystemConfig {
+
     @Autowired
     private DBServiceUser usersService;
+    @Autowired
+    MessageSystem messageSystem;
 
     public static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
     public static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
 
-    @Autowired
-    MessageSystem messageSystem;
 
     @Bean(destroyMethod = "dispose")
     public MessageSystem getMessageSystem() {
@@ -44,6 +47,11 @@ public class MessageSystemConfig {
         HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
         requestHandlerDatabaseStore.addHandler(MessageType.USER_DATA, getGetUserDataRequestHandler());
         return requestHandlerDatabaseStore;
+    }
+
+    @Bean
+    public FrontendService getFrontendService() {
+        return new FrontendServiceImpl(messageSystem);
     }
 
     @Bean

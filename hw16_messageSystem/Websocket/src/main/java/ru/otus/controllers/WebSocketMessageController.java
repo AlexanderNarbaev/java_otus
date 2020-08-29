@@ -9,15 +9,10 @@ import org.springframework.stereotype.Controller;
 import ru.otus.domain.NewUserMessage;
 import ru.otus.domain.WebSocketMessage;
 import ru.otus.messagesystem.MessageSystem;
-import ru.otus.messagesystem.client.MsClient;
-import ru.otus.messagesystem.message.Message;
-import ru.otus.messagesystem.message.MessageType;
 import ru.otus.model.User;
 import ru.otus.model.UserSystemMessage;
+import ru.otus.service.FrontendService;
 import ru.otus.services.DBServiceUser;
-
-import static ru.otus.MessageSystemConfig.DATABASE_SERVICE_CLIENT_NAME;
-import static ru.otus.MessageSystemConfig.FRONTEND_SERVICE_CLIENT_NAME;
 
 @Controller
 public class WebSocketMessageController {
@@ -26,11 +21,13 @@ public class WebSocketMessageController {
 
     private final SimpMessagingTemplate template;
     private final DBServiceUser usersService;
+    private final FrontendService frontendService;
     private final MessageSystem messageSystem;
 
-    public WebSocketMessageController(SimpMessagingTemplate template, DBServiceUser usersService, MessageSystem messageSystem) {
+    public WebSocketMessageController(SimpMessagingTemplate template, DBServiceUser usersService, FrontendService frontendService, MessageSystem messageSystem) {
         this.template = template;
         this.usersService = usersService;
+        this.frontendService = frontendService;
         this.messageSystem = messageSystem;
     }
 
@@ -46,9 +43,7 @@ public class WebSocketMessageController {
     @SendTo("/topic/userCreateStarted")
     public void getMessage(NewUserMessage newUserMessage) {
         logger.info("got newUserMessage:{}", newUserMessage);
-        MsClient frontendClient = messageSystem.getClient(FRONTEND_SERVICE_CLIENT_NAME);
-        Message outMsg = frontendClient.produceMessage(DATABASE_SERVICE_CLIENT_NAME, new UserSystemMessage(new User(0L, newUserMessage.getName(), newUserMessage.getLogin(), newUserMessage.getPassword())),
-                MessageType.USER_DATA, t -> this.template.convertAndSend("/topic/usersList", this.sendMessage()));
-        frontendClient.sendMessage(outMsg);
+        frontendService.saveUser(new UserSystemMessage(new User(0L, newUserMessage.getName(), newUserMessage.getLogin(), newUserMessage.getPassword())),
+                t -> this.template.convertAndSend("/topic/usersList", this.sendMessage()));
     }
 }

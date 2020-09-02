@@ -1,0 +1,7 @@
+rootProject.name = 'hw16_messageSystem'
+
+include 'MessageSystem'
+include 'MessageSystemApp'
+include 'Websocket'
+include 'DataVault'
+

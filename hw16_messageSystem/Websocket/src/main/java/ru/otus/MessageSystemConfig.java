@@ -31,7 +31,7 @@ public class MessageSystemConfig {
     @Autowired
     private DBServiceUser usersService;
     @Autowired
-    MessageSystem messageSystem;
+    private MessageSystem messageSystem;
 
     public static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
     public static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";

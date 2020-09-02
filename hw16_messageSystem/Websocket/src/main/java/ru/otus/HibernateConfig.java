@@ -22,7 +22,7 @@ public class HibernateConfig implements TransactionManagementConfigurer {
     private static final String HIBERNATE_DIALECT = "hibernate.dialect";
     private static final String HIBERNATE_HBM_2_DDL_AUTO = "hibernate.hbm2ddl.auto";
     @Autowired
-    ApplicationProperties applicationProperties;
+    private ApplicationProperties applicationProperties;
 
     @Override
     public TransactionManager annotationDrivenTransactionManager() {

@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 @EnableWebSocketMessageBroker
 @EnableScheduling
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {

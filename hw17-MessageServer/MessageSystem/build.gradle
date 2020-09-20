@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'org.springframework.boot'
+}
+
+sourceCompatibility = JavaVersion.VERSION_13
+targetCompatibility = JavaVersion.VERSION_13
+
+dependencies {
+    implementation("ch.qos.logback:logback-classic")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-junit-jupiter")
+
+    implementation project(':ProtoStubLib')
+
+    implementation("ch.qos.logback:logback-classic")
+    implementation("org.slf4j:slf4j-api")
+    implementation("org.slf4j:jcl-over-slf4j")
+    implementation("ch.qos.logback:logback-core")
+    implementation("ch.qos.logback:logback-access")
+
+
+    implementation("org.reflections:reflections:${Versions.reflections}")
+    implementation("org.springframework.boot:spring-boot-starter")
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}

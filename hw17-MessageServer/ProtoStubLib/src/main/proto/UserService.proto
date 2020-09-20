@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package ru.otus.messagesystem.protobuf.generated;
+
+option java_multiple_files = true;
+
+message UserMessage {
+  int64 id = 1;
+  string name = 2;
+  string login = 3;
+  string password = 4;
+}
+
+message Empty {}
+
+service UserService {
+  rpc saveUser(UserMessage) returns (UserMessage);
+  rpc findAllUsers(Empty) returns (stream UserMessage);
+}

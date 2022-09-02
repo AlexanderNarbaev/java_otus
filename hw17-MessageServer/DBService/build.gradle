@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'org.springframework.boot'
+}
+sourceCompatibility = JavaVersion.VERSION_13
+targetCompatibility = JavaVersion.VERSION_13
+
+dependencies {
+
+    implementation project(':ProtoStubLib')
+
+    implementation("ch.qos.logback:logback-classic")
+    implementation("org.slf4j:slf4j-api")
+    implementation("org.slf4j:jcl-over-slf4j")
+    implementation("ch.qos.logback:logback-core")
+    implementation("ch.qos.logback:logback-access")
+
+
+    implementation("org.reflections:reflections:${Versions.reflections}")
+    implementation("org.springframework.boot:spring-boot-starter")
+    api("org.hibernate:hibernate-core")
+    implementation("com.zaxxer:HikariCP")
+
+    implementation("com.h2database:h2")
+
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-orm")
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+}
+
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
